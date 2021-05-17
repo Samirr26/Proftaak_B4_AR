@@ -1,11 +1,24 @@
 // Proftaak_B4_AR.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
 
+#include <opencv2/imgcodecs.hpp>
+#include <opencv2/highgui.hpp>
+#include <opencv2/imgproc.hpp>
 #include <iostream>
 
-int main()
-{
-    std::cout << "Hello World!\n";
+using namespace cv;
+using namespace std;
+
+
+/////////////////  Images  //////////////////////
+
+void main() {
+
+    string path = "Resources/test.jpg";
+    Mat img = imread(path);
+    imshow("Image", img);
+    waitKey(0);
+
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
