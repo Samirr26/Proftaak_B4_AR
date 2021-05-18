@@ -1,33 +1,58 @@
-// Proftaak_B4_AR.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
-
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
+#include <opencv2/objdetect.hpp>
 #include <iostream>
 
 using namespace cv;
 using namespace std;
 
 
-/////////////////  Images  //////////////////////
+///////////////  Images  //////////////////////
+VideoCapture cap(0);
+Mat img;
 
 void main() {
 
-    string path = "Resources/test.jpg";
-    Mat img = imread(path);
-    imshow("Image", img);
-    waitKey(0);
+    //string path = "Resources/test.png";
+    //Mat img = imread(path);
+    CascadeClassifier faceCascade, eyeCascade, rightEyeCascade, leftEyeCascade;
+    faceCascade.load("Resources/haarcascade_frontalface_default.xml");
+    eyeCascade.load("Resources/haarcascade_eye.xml");
+    //rightEyeCascade.load("Resources/haarcascade_right_eye.xml");
+    //leftEyeCascade.load("Resources/haarcascade_left_eye.xml");
+    if (faceCascade.empty()) { cout << "XML file not loaded" << endl; }
+    //if (eyeCascade.empty()) { cout << "XML file not loaded" << endl; }
+
+
+
+    while (true)
+    {
+        cap.read(img);
+
+        vector<Rect> faces;
+        vector<Rect> eyes;
+        //vector<Rect> rightEyes;
+        //vector<Rect> LeftEyes;
+        faceCascade.detectMultiScale(img, faces, 1.1, 10);
+        eyeCascade.detectMultiScale(img, eyes, 1.1, 10);
+        //rightEyeCascade.detectMultiScale(img, rightEyes, 1.1, 10);
+        //leftEyeCascade.detectMultiScale(img, LeftEyes, 1.1, 10);
+
+        for (int i = 0; i < faces.size(); i++)
+        {
+            rectangle(img, faces[i].tl(), faces[i].br(), Scalar(255, 0, 255), 3);
+
+        }
+
+        for (int n = 0; n < eyes.size(); n++)
+        {
+            rectangle(img, eyes[n].tl(), eyes[n].br(), Scalar(0, 255, 255), 3);
+        }
+
+        imshow("Image", img);
+        waitKey(1);
+
+    }
 
 }
-
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
-
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
