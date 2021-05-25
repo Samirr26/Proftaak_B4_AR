@@ -49,8 +49,8 @@ void main() {
         {
             rectangle(img, eyes[n].tl(), eyes[n].br(), Scalar(0, 255, 255), 3);
         }
-
         imshow("Image", img);
+        //imshow("Image", img);
         waitKey(1);
 
     }
