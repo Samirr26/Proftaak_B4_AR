@@ -1,58 +1,113 @@
-#include <opencv2/imgcodecs.hpp>
-#include <opencv2/highgui.hpp>
-#include <opencv2/imgproc.hpp>
-#include <opencv2/objdetect.hpp>
 #include <iostream>
+#include "opencv2\objdetect\objdetect.hpp"
+#include "opencv2\opencv.hpp"
 
-using namespace cv;
 using namespace std;
+using namespace cv;
 
+const unsigned int BORDER = 5;
 
-///////////////  Images  //////////////////////
-VideoCapture cap(0);
-Mat img;
+Mat GrabCut(Mat image) {
+    cv::Mat result, bgModel, fgModel, downsampled;
+    const auto fullSize = image.size();
 
-void main() {
+    resize(image, downsampled, Size(), 0.5, 0.5);
+    cv::Rect rectangle(BORDER, BORDER, downsampled.cols, downsampled.rows);
 
-    //string path = "Resources/test.png";
-    //Mat img = imread(path);
-    CascadeClassifier faceCascade, eyeCascade, rightEyeCascade, leftEyeCascade;
-    faceCascade.load("Resources/haarcascade_frontalface_default.xml");
-    eyeCascade.load("Resources/haarcascade_eye.xml");
-    //rightEyeCascade.load("Resources/haarcascade_right_eye.xml");
-    //leftEyeCascade.load("Resources/haarcascade_left_eye.xml");
-    if (faceCascade.empty()) { cout << "XML file not loaded" << endl; }
-    //if (eyeCascade.empty()) { cout << "XML file not loaded" << endl; }
+    // GrabCut segmentation
+    cv::grabCut(downsampled,    // input image
+        result,   // segmentation result
+        rectangle,// rectangle containing foreground
+        bgModel, fgModel, // models
+        1,        // number of iterations
+        cv::GC_INIT_WITH_RECT); // use rectangle
 
+    // Get the pixels marked as likely foreground
+    cv::compare(result, cv::GC_PR_FGD, result, cv::CMP_EQ);
+    // upsample the resulting mask
+    cv::Mat resultUp;
+    cv::pyrUp(result, resultUp, fullSize);
+    // Generate output image
+    cv::Mat foreground(fullSize, CV_8UC3, cv::Scalar(255, 255, 255));
+    image.copyTo(foreground, resultUp); // bg pixels not copied
+    return foreground;
+}
 
+int  VideoDisplay() {
+    std::cout << "start recognizing..." << endl;
+    string classifier = "Resources/haarcascade_frontalface_default.xml";
+
+    CascadeClassifier face_cascade;
+
+    if (!face_cascade.load(classifier)) {
+        cout << " Error loading file" << endl;
+        return -1;
+    }
+    VideoCapture cap(0);
+
+    if (!cap.isOpened())
+    {
+        cout << "exit" << endl;
+        return -1;
+    }
 
     while (true)
     {
-        cap.read(img);
-
         vector<Rect> faces;
-        vector<Rect> eyes;
-        //vector<Rect> rightEyes;
-        //vector<Rect> LeftEyes;
-        faceCascade.detectMultiScale(img, faces, 1.1, 10);
-        eyeCascade.detectMultiScale(img, eyes, 1.1, 10);
-        //rightEyeCascade.detectMultiScale(img, rightEyes, 1.1, 10);
-        //leftEyeCascade.detectMultiScale(img, LeftEyes, 1.1, 10);
+        Mat frame, graySacleFrame, original;
 
-        for (int i = 0; i < faces.size(); i++)
-        {
-            rectangle(img, faces[i].tl(), faces[i].br(), Scalar(255, 0, 255), 3);
+        cap >> original;
 
+        if (!original.empty()) {
+            //convert image to gray scale and equalize
+            cvtColor(original, graySacleFrame, 6);
+
+            //detect face in gray image
+            face_cascade.detectMultiScale(graySacleFrame, faces, 1.1, 3, 0, cv::Size(90, 90));
+
+            int width = 0, height = 0;
+            cv::Mat seg_grabcut;
+            //region of interest
+
+            for (int i = 0; i < faces.size(); i++)
+            {
+                //region of interest
+                Rect face_i = faces[i];
+
+                //crop the roi from grya image
+                Mat crop = original(face_i);
+
+                //resizing the cropped image to suit to database image sizes
+                Mat face_resized;
+                cv::resize(crop, face_resized, Size(256, 256), 1.0, 1.0, INTER_CUBIC);
+
+                //drawing green rectagle in recognize face
+                rectangle(original, face_i, CV_RGB(0, 255, 0), 1);
+
+                if (!face_resized.empty())
+                {
+                    seg_grabcut = GrabCut(face_resized);
+                    if (!seg_grabcut.empty())
+                    {
+                        imshow("segmented result", seg_grabcut);
+                    }
+
+                }
+
+            }
+
+            //display to the winodw
+            cv::imshow("Image", original);
         }
 
-        for (int n = 0; n < eyes.size(); n++)
-        {
-            rectangle(img, eyes[n].tl(), eyes[n].br(), Scalar(0, 255, 255), 3);
-        }
-        imshow("Image", img);
-        //imshow("Image", img);
-        waitKey(1);
-
+        if (waitKey(30) >= 0) 
+            break;
     }
+    return 0;
+}
 
+int main()
+{
+    VideoDisplay();
+    return 0;
 }
