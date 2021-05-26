@@ -7,7 +7,7 @@ using namespace cv;
 
 const unsigned int BORDER = 5;
 
-Mat GrabCut(Mat image) {
+Mat GrabCut(Mat image) {        
     cv::Mat result, bgModel, fgModel, downsampled;
     const auto fullSize = image.size();
 
@@ -25,11 +25,12 @@ Mat GrabCut(Mat image) {
     // Get the pixels marked as likely foreground
     cv::compare(result, cv::GC_PR_FGD, result, cv::CMP_EQ);
     // upsample the resulting mask
-    cv::Mat resultUp;
-    cv::pyrUp(result, resultUp, fullSize);
+    cv::Mat resultUp, resultDil;
+    cv::dilate(result, resultDil, getStructuringElement(MORPH_RECT, Size(1,1) ));
+    cv::pyrUp(result, resultDil, fullSize);
     // Generate output image
     cv::Mat foreground(fullSize, CV_8UC3, cv::Scalar(255, 255, 255));
-    image.copyTo(foreground, resultUp); // bg pixels not copied
+    image.copyTo(foreground, resultDil); // bg pixels not copied
     return foreground;
 }
 
