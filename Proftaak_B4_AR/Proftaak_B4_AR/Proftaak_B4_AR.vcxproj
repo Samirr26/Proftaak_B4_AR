@@ -148,7 +148,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="FaceCutOut.cpp" />
+    <ClCompile Include="FaceDetection.cpp" />
     <ClCompile Include="Proftaak_B4_AR.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="FaceCutOut.h" />
+    <ClInclude Include="FaceDetection.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

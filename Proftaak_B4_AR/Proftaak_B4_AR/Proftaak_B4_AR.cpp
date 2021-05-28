@@ -1,6 +1,9 @@
 #include <iostream>
 #include "opencv2\objdetect\objdetect.hpp"
 #include "opencv2\opencv.hpp"
+#include <thread>
+
+#include "FaceDetection.h"
 
 using namespace std;
 using namespace cv;
@@ -107,8 +110,21 @@ int  VideoDisplay() {
     return 0;
 }
 
+void faceDetectionTask() {
+
+    FaceDetection faceDetection(0);
+    faceDetection.detectFace();
+}
+
 int main()
 {
-    VideoDisplay();
+    //VideoDisplay();
+
+    std::thread faceDetectThread(faceDetectionTask);
+    while (true) {
+
+
+    }
+
     return 0;
 }
