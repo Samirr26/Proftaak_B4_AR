@@ -8,6 +8,9 @@ class FaceDetection
 public:
 	FaceDetection(int cameraId);
 	void detectFace();
+	int VideoDisplay();
+	cv::Mat getFace();
+
 
 private:
 	int cameraId;
