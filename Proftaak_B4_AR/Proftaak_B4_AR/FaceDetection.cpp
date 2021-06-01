@@ -73,25 +73,24 @@ int FaceDetection::VideoDisplay() {
             cv::Mat seg_grabcut;
             //region of interest
 
-
-
             for (int i = 0; i < faces.size(); i++)
             {
                 //region of interest
                 cv::Rect face_i = faces[i];
 
-                //crop the roi from grya image
+                //crop the roi from gray image
                 cv::Mat crop = original(face_i);
 
                 //resizing the cropped image to suit to database image sizes
                 cv::Mat face_resized;
                 cv::resize(crop, face_resized, cv::Size(256, 256), 1.0, 1.0, cv::INTER_CUBIC);
 
-                //drawing green rectagle in recognize face
-                rectangle(original, faces[i].tl(), faces[i].br(), Scalar(255, 0, 255), 3);
+                //drawing rectagle in recognized face
+                cv::rectangle(original, faces[i].tl(), faces[i].br(), Scalar(255, 0, 255), 3);
 
                 if (!face_resized.empty())
                 {
+                    //grabcut the picture
                     face = faceCutOut.GrabCut(face_resized);
                     if (!face.empty())
                     {
@@ -107,15 +106,15 @@ int FaceDetection::VideoDisplay() {
                 //region of interest
                 cv::Rect eye_i = eyes[i];
 
-                //crop the roi from grya image
+                //crop the roi from gray image
                 cv::Mat crop = original(eye_i);
 
-                //resizing the cropped image to suit to database image sizes
+                //resizing the cropped image 
                 cv::Mat eye_resized;
                 cv::resize(crop, eye_resized, cv::Size(64, 64), 1.0, 1.0, cv::INTER_CUBIC);
 
-                //drawing green rectagle in recognize face
-                rectangle(original, eyes[i].tl(), eyes[i].br(), Scalar(0, 255, 255), 3);
+                //drawing rectagle in recognized eyes
+                cv::rectangle(original, eyes[i].tl(), eyes[i].br(), Scalar(0, 255, 255), 3);
 
             }
 
