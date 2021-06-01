@@ -64,14 +64,16 @@ int FaceDetection::VideoDisplay() {
             cvtColor(original, graySacleFrame, 6);
 
             //detect face in gray image
-            face_cascade.detectMultiScale(graySacleFrame, faces, 1.1, 3, 0, cv::Size(90, 90));
+            face_cascade.detectMultiScale(graySacleFrame, faces, 1.1, 10);
 
             //detect eyes in the face
-            eyes_cascade.detectMultiScale(graySacleFrame, faces, 1.1, 3, 0, cv::Size(90, 90));
+            eyes_cascade.detectMultiScale(graySacleFrame, eyes, 1.1, 10);
 
             int width = 0, height = 0;
             cv::Mat seg_grabcut;
             //region of interest
+
+
 
             for (int i = 0; i < faces.size(); i++)
             {
@@ -86,7 +88,7 @@ int FaceDetection::VideoDisplay() {
                 cv::resize(crop, face_resized, cv::Size(256, 256), 1.0, 1.0, cv::INTER_CUBIC);
 
                 //drawing green rectagle in recognize face
-                rectangle(original, face_i, CV_RGB(0, 255, 0), 1);
+                rectangle(original, faces[i].tl(), faces[i].br(), Scalar(255, 0, 255), 3);
 
                 if (!face_resized.empty())
                 {
@@ -113,16 +115,11 @@ int FaceDetection::VideoDisplay() {
                 cv::resize(crop, eye_resized, cv::Size(64, 64), 1.0, 1.0, cv::INTER_CUBIC);
 
                 //drawing green rectagle in recognize face
-                rectangle(original, eye_i, CV_RGB(255, 0, 0), 1);
-
-                if (!eye_resized.empty())
-                {
-
-                    
-
-                }
+                rectangle(original, eyes[i].tl(), eyes[i].br(), Scalar(0, 255, 255), 3);
 
             }
+
+            
 
             //display to the winodw
             cv::imshow("Image", original);
