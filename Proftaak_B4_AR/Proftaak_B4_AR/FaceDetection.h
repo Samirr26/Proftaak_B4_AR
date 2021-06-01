@@ -14,6 +14,6 @@ public:
 
 private:
 	int cameraId;
-	cv::Mat face;
+	cv::Mat face, eye;
 };
 

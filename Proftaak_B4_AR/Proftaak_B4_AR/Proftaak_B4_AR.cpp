@@ -21,7 +21,7 @@ int main()
     std::thread faceDetectThread(faceDetectionTask);
     while (true) {
 
-        faceDetection.getFace();
+        //faceDetection.getFace();
 
     }
 
