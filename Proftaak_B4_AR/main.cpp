@@ -77,54 +77,22 @@ void init()
 	glEnable(GL_DEPTH_TEST);
 	srand(static_cast <unsigned> (time(0)));
 
-	for (int x = -2; x < 2; x += 2) {
-
-		/*GameObject	* o = new GameObject();
-		o->position = glm::vec3(x, 0, 0);
-		o->rotation.y = x * .25f;
-		o->addComponent(new CubeComponent(2.0f));
-		o->addComponent(new SpinComponent(2));
-		objects.push_back(o);*/
-
-		for (int  x1 = -4; x1 < 4; x1 += 4)
+	
+		for (int  x1 = 0; x1 < 4; x1 += 1)
 		{
-			for (int  z1 = -4; z1 < 4; z1 += 4)
-			{
 				GameObject* o = new GameObject();
-				o->position = glm::vec3(x1 + 2, 0, z1 - 2);
-				o->rotation.y = x * .25f;
+				o->position = glm::vec3(x1 + 2, 0, 0);
+				o->rotation.y = x1 * .25f;
 				o->addComponent(new CubeComponent(1.2, 1.2, 1.2, 1, 0, 0, 1));
-				o->addComponent(new SpinComponent(3.0f));
+				o->addComponent(new SpinComponent(5.0f));
+				o->point = 90 * x1;
 
 				objects.push_back(o);
-			}
+			
 			
 		}
 
-		/*for (int  x2 = -8; x2 < 8; x2 += 4)
-		{
-			GameObject* o = new GameObject();
-			o->position = glm::vec3(x2 + 6, 1, x2 - 6);
-			o->rotation.y = x * .25f;
-			o->addComponent(new CubeComponent(2, 1, 0, 1, 1));
-			o->addComponent(new SpinComponent(1));
-		}*/
-	
-		
-	}
 
-	for (int x = -10; x < 10; x += 10)
-	{
-		for (int z = -10; z < 10; z += 10)
-		{
-			GameObject* o = new GameObject();
-			o->position = glm::vec3(x + 5, 0, z);
-			o->addComponent(new CubeComponent(4.9f, 0.1f, 4.9f, 0, 1, 1, 0));
-			objectArea.push_back(o);
-		}
-		
-
-	}
 
 	model = new ObjModel("models/car/honda_jazz.obj");
 
@@ -137,20 +105,24 @@ void init()
 		});
 }
 
-void circlePath(GameObject* object, float degrees, bool startingPoint) {
-	if (startingPoint)
-	{
-		counterSin += degrees;
-		startingPoint = false;
-	}
-	counterSin += 0.05f;
-	if (counterSin >= 360)
-	{
-		counterSin = 0;
-	}
-	float radian = (counterSin * M_PI) / 180;
+GameObject* positionCircleX(GameObject* object, float degrees) {
+
+	float radian = (degrees * M_PI) / 180;
 	object->position.x = 10 * sin(radian);
 	object->position.z = 10 * cos(radian);
+
+	return object;
+}
+
+void circlePath(GameObject* object) {
+	object->point += 0.5f;
+	if (object->point >= 360)
+	{
+		object->point = 0;
+	}
+	float radian = (object->point * M_PI) / 180;
+	object->position.x = 5 * sin(radian);
+	object->position.z = 5 * cos(radian);
 
 }
 
@@ -175,8 +147,8 @@ void update()
 				}
 			}
 		}*/
-			
-		circlePath(o, 90, startingPoint);
+
+		circlePath(o);
 		
 			
 

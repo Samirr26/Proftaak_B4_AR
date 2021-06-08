@@ -19,6 +19,7 @@ public:
 	glm::vec3 position;
 	glm::vec3 rotation;
 	glm::vec3 scale = glm::vec3(1,1,1);
+	float point;
 
 	void addComponent(Component* component);
 	std::list<Component*> getComponents();
