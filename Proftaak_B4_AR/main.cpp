@@ -13,6 +13,12 @@ using tigl::Vertex;
 #include "EnemyComponent.h"
 #include "ObjModel.h"
 #include <time.h>
+#include <iostream>
+
+#define _USE_MATH_DEFINES
+
+#include <math.h>
+#include <corecrt_math.h>
 
 #pragma comment(lib, "glfw3.lib")
 #pragma comment(lib, "glew32s.lib")
@@ -57,7 +63,10 @@ int main(void)
 
 
 std::list<GameObject*> objects;
+std::list<GameObject*> objectArea;
+float counterSin = 0;
 double lastFrameTime = 0;
+bool startingPoint = true;
 GameObject* movingObject;
 
 GameObject* player;
@@ -68,7 +77,7 @@ void init()
 	glEnable(GL_DEPTH_TEST);
 	srand(static_cast <unsigned> (time(0)));
 
-	for (int x = -30; x < 30; x += 2) {
+	for (int x = -2; x < 2; x += 2) {
 
 		/*GameObject	* o = new GameObject();
 		o->position = glm::vec3(x, 0, 0);
@@ -77,41 +86,48 @@ void init()
 		o->addComponent(new SpinComponent(2));
 		objects.push_back(o);*/
 
-		for (int  x1 = -8; x1 < 8; x1 += 4)
+		for (int  x1 = -4; x1 < 4; x1 += 4)
 		{
-			for (int  z1 = -8; z1 < 8; z1 += 4)
+			for (int  z1 = -4; z1 < 4; z1 += 4)
 			{
 				GameObject* o = new GameObject();
 				o->position = glm::vec3(x1 + 2, 0, z1 - 2);
 				o->rotation.y = x * .25f;
-				o->addComponent(new CubeComponent(1.2f, 1, 0, 0, 1));
-				o->addComponent(new SpinComponent(1));
+				o->addComponent(new CubeComponent(1.2, 1.2, 1.2, 1, 0, 0, 1));
+				o->addComponent(new SpinComponent(3.0f));
 
 				objects.push_back(o);
 			}
 			
 		}
 
-		for (int  x2 = -8; x2 < 8; x2 += 4)
+		/*for (int  x2 = -8; x2 < 8; x2 += 4)
 		{
 			GameObject* o = new GameObject();
 			o->position = glm::vec3(x2 + 6, 1, x2 - 6);
 			o->rotation.y = x * .25f;
 			o->addComponent(new CubeComponent(2, 1, 0, 1, 1));
 			o->addComponent(new SpinComponent(1));
-		}
+		}*/
 	
 		
 	}
 
-	player = new GameObject();
-	player->position = glm::vec3(0, 1, 5);
-	player->addComponent(new CubeComponent(1, 1, 1, 1, 1));
-	player->addComponent(new PlayerComponent());
+	for (int x = -10; x < 10; x += 10)
+	{
+		for (int z = -10; z < 10; z += 10)
+		{
+			GameObject* o = new GameObject();
+			o->position = glm::vec3(x + 5, 0, z);
+			o->addComponent(new CubeComponent(4.9f, 0.1f, 4.9f, 0, 1, 1, 0));
+			objectArea.push_back(o);
+		}
+		
+
+	}
 
 	model = new ObjModel("models/car/honda_jazz.obj");
-	
-	objects.push_back(player);
+
 
 	
 	glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -121,6 +137,22 @@ void init()
 		});
 }
 
+void circlePath(GameObject* object, float degrees, bool startingPoint) {
+	if (startingPoint)
+	{
+		counterSin += degrees;
+		startingPoint = false;
+	}
+	counterSin += 0.05f;
+	if (counterSin >= 360)
+	{
+		counterSin = 0;
+	}
+	float radian = (counterSin * M_PI) / 180;
+	object->position.x = 10 * sin(radian);
+	object->position.z = 10 * cos(radian);
+
+}
 
 void update()
 {
@@ -129,28 +161,38 @@ void update()
 	lastFrameTime = currentFrameTime;
 
 	for (auto& o : objects) {
-		if (o->position.x < 10 || o->position.z < 5)
-		{
-			if (static_cast <float> (rand()) / static_cast <float> (RAND_MAX) > 0.5)
+		/*for (auto& oArea : objectArea) {
+			if (o->position.x > oArea->position.y || o->position.z > oArea->position.y)
 			{
-				o->position.x += static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-				o->position.z += static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+				if (static_cast <float> (rand()) / static_cast <float> (RAND_MAX) > 0.5)
+				{
+					o->position.x += (static_cast <float> (rand()) / static_cast <float> (RAND_MAX)) / 50;
+					o->position.z += (static_cast <float> (rand()) / static_cast <float> (RAND_MAX)) / 50;
+				}
+				else {
+					o->position.x -= (static_cast <float> (rand()) / static_cast <float> (RAND_MAX)) / 50;
+					o->position.z -= (static_cast <float> (rand()) / static_cast <float> (RAND_MAX)) / 50;
+				}
 			}
-			else {
-				o->position.x -= static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-				o->position.z -= static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-			}
+		}*/
 			
+		circlePath(o, 90, startingPoint);
+		
 			
-		}
 
 		o->update(deltaTime);
+	}
+
+	for (auto& oArea : objectArea) {
+		oArea->update(deltaTime);
 	}
 		
 		
 	
 
 }
+
+
 
 void draw()
 {
@@ -178,6 +220,9 @@ void draw()
 
 	for (auto& o : objects)
 		o->draw();
+
+	for (auto& oArea : objectArea)
+		oArea->draw();
 }
 
 

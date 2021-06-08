@@ -10,7 +10,7 @@ class CubeComponent : public DrawComponent
 {
 	std::vector<Vertex> verts;
 public:
-	CubeComponent(float size, float r, float b, float g, float a);
+	CubeComponent(float sizeX, float sizeY, float sizeZ, float r, float g, float b, float a);
 	~CubeComponent();
 
 
