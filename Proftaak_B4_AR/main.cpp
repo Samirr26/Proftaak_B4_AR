@@ -12,6 +12,7 @@ using tigl::Vertex;
 #include "TimerJumper.h"
 #include "EnemyComponent.h"
 #include "ObjModel.h"
+#include <time.h>
 
 #pragma comment(lib, "glfw3.lib")
 #pragma comment(lib, "glew32s.lib")
@@ -65,6 +66,7 @@ ObjModel* model;
 void init()
 {
 	glEnable(GL_DEPTH_TEST);
+	srand(static_cast <unsigned> (time(0)));
 
 	for (int x = -30; x < 30; x += 2) {
 
@@ -129,16 +131,19 @@ void update()
 	for (auto& o : objects) {
 		if (o->position.x < 10 || o->position.z < 5)
 		{
-			o->position.x += 0.01f;
-			o->position.z += 0.01f;
+			if (static_cast <float> (rand()) / static_cast <float> (RAND_MAX) > 0.5)
+			{
+				o->position.x += static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+				o->position.z += static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+			}
+			else {
+				o->position.x -= static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+				o->position.z -= static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+			}
+			
+			
 		}
 
-
-		if (o->position.x > 10 || o->position.z > 5)
-		{
-			o->position.x -= 0.01f;
-			o->position.z -= 0.01f;
-		}
 		o->update(deltaTime);
 	}
 		
