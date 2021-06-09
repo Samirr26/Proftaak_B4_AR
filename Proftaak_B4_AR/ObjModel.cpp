@@ -6,6 +6,8 @@
 
 #include "tigl.h"
 #include "Texture.h"
+#include "GameObject.h"
+#include <glm/gtc/matrix_transform.hpp>
 
 using tigl::Vertex;
 
@@ -187,10 +189,16 @@ ObjModel::~ObjModel(void)
 
 void ObjModel::draw()
 {
-	tigl::begin(GL_TRIANGLES);
+	glm::mat4 modelMatrix(1.0f);
+
+	modelMatrix = glm::translate(modelMatrix, gameObject->position);
+	modelMatrix = glm::scale(modelMatrix, glm::vec3(0.01f, 0.01f, 0.01f));
+	tigl::shader->setModelMatrix(modelMatrix);
+
 	// Loop through groups
 	for (int group = 0; group < this->groups.size(); group++) 
 	{
+		tigl::begin(GL_TRIANGLES);
 		//set material texture, if available
 		//set material color, if available
 
@@ -204,8 +212,9 @@ void ObjModel::draw()
 				tigl::addVertex(tigl::Vertex::PCTN(this->vertices[vertice.position], glm::vec4(1, 0, 0, 1), this->texcoords[vertice.texcoord], this->normals[vertice.normal]));
 			}
 		}
+		tigl::end();
 	}
-	tigl::end();
+	
 
 
 	//foreach group in groups

@@ -2,6 +2,7 @@
 
 #include <GL/glew.h>
 #include <glm/glm.hpp>
+#include "DrawComponent.h"
 
 #include <string>
 #include <vector>
@@ -9,7 +10,7 @@
 
 class Texture;
 
-class ObjModel
+class ObjModel : public DrawComponent
 {
 private:
 	class Vertex
@@ -53,6 +54,6 @@ public:
 	ObjModel(const std::string &filename);
 	~ObjModel(void);
 
-	void draw();
+	virtual void draw() override;
 };
 

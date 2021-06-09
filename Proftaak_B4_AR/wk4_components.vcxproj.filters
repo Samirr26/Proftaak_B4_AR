@@ -1,0 +1,99 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="Component.cpp">
+      <Filter>components</Filter>
+    </ClCompile>
+    <ClCompile Include="CubeComponent.cpp">
+      <Filter>components</Filter>
+    </ClCompile>
+    <ClCompile Include="DrawComponent.cpp">
+      <Filter>components</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyComponent.cpp">
+      <Filter>components</Filter>
+    </ClCompile>
+    <ClCompile Include="MoveToComponent.cpp">
+      <Filter>components</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerComponent.cpp">
+      <Filter>components</Filter>
+    </ClCompile>
+    <ClCompile Include="SpinComponent.cpp">
+      <Filter>components</Filter>
+    </ClCompile>
+    <ClCompile Include="TimerJumper.cpp">
+      <Filter>components</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>components</Filter>
+    </ClCompile>
+    <ClCompile Include="tigl.cpp">
+      <Filter>lib</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Component.h">
+      <Filter>components</Filter>
+    </ClInclude>
+    <ClInclude Include="CubeComponent.h">
+      <Filter>components</Filter>
+    </ClInclude>
+    <ClInclude Include="DrawComponent.h">
+      <Filter>components</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyComponent.h">
+      <Filter>components</Filter>
+    </ClInclude>
+    <ClInclude Include="MoveToComponent.h">
+      <Filter>components</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerComponent.h">
+      <Filter>components</Filter>
+    </ClInclude>
+    <ClInclude Include="SpinComponent.h">
+      <Filter>components</Filter>
+    </ClInclude>
+    <ClInclude Include="TimerJumper.h">
+      <Filter>components</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>components</Filter>
+    </ClInclude>
+    <ClInclude Include="tigl.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="stb_image.h">
+      <Filter>lib</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjModel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="components">
+      <UniqueIdentifier>{52e57959-1448-4e15-9548-13836701ab74}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib">
+      <UniqueIdentifier>{af5959b4-a3ed-41fc-bb31-f833be22e83e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{0196d29c-eb7c-4b5e-b5fc-b5cb9edb0cbd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{e5e4ad01-658e-4582-991e-30eb320f8852}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

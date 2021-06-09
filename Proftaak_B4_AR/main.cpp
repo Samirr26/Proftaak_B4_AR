@@ -77,13 +77,18 @@ void init()
 	glEnable(GL_DEPTH_TEST);
 	srand(static_cast <unsigned> (time(0)));
 
-	
+	/*GameObject* o1 = new GameObject();
+	o1->position = glm::vec3(0, 0, 0);
+	o1->addComponent(new ObjModel("models/car/honda_jazz.obj"));
+	objects.push_back(o1);*/
+
 		for (int  x1 = 0; x1 < 4; x1 += 1)
 		{
 				GameObject* o = new GameObject();
 				o->position = glm::vec3(x1 + 2, 0, 0);
 				o->rotation.y = x1 * .25f;
-				o->addComponent(new CubeComponent(1.2, 1.2, 1.2, 1, 0, 0, 1));
+				//o->addComponent(new CubeComponent(1.2, 1.2, 1.2, 1, 0, 0, 1));
+				o->addComponent(new ObjModel("models/car/honda_jazz.obj"));
 				o->addComponent(new SpinComponent(5.0f));
 				o->point = 90 * x1;
 
@@ -94,7 +99,7 @@ void init()
 
 
 
-	model = new ObjModel("models/car/honda_jazz.obj");
+	//model = new ObjModel("models/car/honda_jazz.obj");
 
 
 	
@@ -181,12 +186,12 @@ void draw()
 
 	tigl::shader->enableColor(true);
 	//temporary draw floor
-	tigl::begin(GL_QUADS);
+	/*tigl::begin(GL_QUADS);
 	tigl::addVertex(Vertex::PC(glm::vec3(-50, 0, -50), glm::vec4(1, 0, 0, 1)));
 	tigl::addVertex(Vertex::PC(glm::vec3(-50, 0, 50), glm::vec4(0, 1, 0, 1)));
 	tigl::addVertex(Vertex::PC(glm::vec3(50, 0, 50), glm::vec4(0, 0, 1, 1)));
 	tigl::addVertex(Vertex::PC(glm::vec3(50, 0, -50), glm::vec4(0, 0, 1, 1)));
-	tigl::end();
+	tigl::end();*/
 
 
 
