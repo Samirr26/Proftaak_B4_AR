@@ -14,6 +14,8 @@ using tigl::Vertex;
 #include "ObjModel.h"
 #include <time.h>
 #include <iostream>
+#include "FpsCam.h"
+#include "Texture.h"
 
 #define _USE_MATH_DEFINES
 
@@ -25,7 +27,8 @@ using tigl::Vertex;
 #pragma comment(lib, "opengl32.lib")
 
 GLFWwindow* window;
-
+FpsCam* camera;
+Texture* texture;
 
 void init();
 void update();
@@ -98,9 +101,25 @@ void init()
 
 	}
 
+	for (int x1 = 0; x1 < 4; x1 += 1)
+	{
+		GameObject* o = new GameObject();
+		o->position = glm::vec3(x1 + 2, 2, 0);
+		o->rotation.y = x1 * .25f;
+		//o->scale = glm::vec3(0.03f, 0.03f, 0.03f);
+		o->addComponent(new CubeComponent(0.3, 0.3, 0.3, 1, 1, 1, 0));
+		o->addComponent(new SpinComponent(5.0f));
+		o->point = 90 * x1;
+
+		objects.push_back(o);
+
+	}
+
+	
 	
 
-
+	camera = new FpsCam(window);
+	texture = new Texture("Resources/test1.jpg");
 
 	//model = new ObjModel("models/car/honda_jazz.obj");
 
@@ -140,6 +159,8 @@ void update()
 	double deltaTime = currentFrameTime - lastFrameTime;
 	lastFrameTime = currentFrameTime;
 
+	camera->update(window);
+
 	for (auto& o : objects) {
 		/*for (auto& oArea : objectArea) {
 			if (o->position.x > oArea->position.y || o->position.z > oArea->position.y)
@@ -167,8 +188,10 @@ void update()
 		oArea->update(deltaTime);
 	}
 
-
-
+	if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS)
+		texture = new Texture("Resources/gras.jpg");
+	if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS)
+		texture = new Texture("Resources/test.jpg");
 
 }
 
@@ -184,22 +207,26 @@ void draw()
 	glm::mat4 projection = glm::perspective(glm::radians(75.0f), viewport[2] / (float)viewport[3], 0.01f, 1000.0f);
 
 	tigl::shader->setProjectionMatrix(projection);
-	tigl::shader->setViewMatrix(glm::lookAt(glm::vec3(0, 10, 10), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0)));
+	tigl::shader->setViewMatrix(camera->getMatrix());
 	tigl::shader->setModelMatrix(glm::mat4(1.0f));
 
 	tigl::shader->enableColor(true);
 	//temporary draw floor
 	tigl::begin(GL_QUADS);
 	tigl::addVertex(Vertex::PC(glm::vec3(-50, 0, -50), glm::vec4(1, 0, 0, 1)));
-	tigl::addVertex(Vertex::PC(glm::vec3(-50, 0, 50), glm::vec4(0, 1, 0, 1)));
+	tigl::addVertex(Vertex::PC(glm::vec3(-50, 0, 50),  glm::vec4(0, 1, 0, 1)));
 	tigl::addVertex(Vertex::PC(glm::vec3(50, 0, 50), glm::vec4(0, 0, 1, 1)));
 	tigl::addVertex(Vertex::PC(glm::vec3(50, 0, -50), glm::vec4(0, 0, 1, 1)));
 	tigl::end();
+
+	texture->bind();
 
 	tigl::shader->enableTexture(true);
 
 	for (auto& o : objects)
 		o->draw();
+
+	//texture->unBind();
 
 	tigl::shader->enableTexture(false);
 

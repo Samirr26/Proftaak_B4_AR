@@ -37,6 +37,10 @@ Texture::Texture(const std::string& fileName)
     stbi_image_free(data);
 }
 
+void Texture::unBind() {
+    glBindTexture(GL_TEXTURE_2D, 0);
+}
+
 void Texture::bind()
 {
     glBindTexture(GL_TEXTURE_2D, id);

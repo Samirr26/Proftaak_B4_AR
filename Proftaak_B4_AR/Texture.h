@@ -9,4 +9,5 @@ class Texture
 public:
 	Texture(const std::string& fileName);
 	void bind();
+	void unBind();
 };
