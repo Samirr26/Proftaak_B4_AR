@@ -77,28 +77,32 @@ void init()
 	glEnable(GL_DEPTH_TEST);
 	srand(static_cast <unsigned> (time(0)));
 
-		model = new ObjModel("models/car/honda_jazz.obj");
+	/*GameObject* o1 = new GameObject();
+	o1->position = glm::vec3(0, 0, 0);
+	o1->addComponent(new ObjModel("models/car/honda_jazz.obj"));
+	objects.push_back(o1);*/
 
-	
-		for (int  x1 = 0; x1 < 4; x1 += 1)
-		{
-				GameObject* o = new GameObject();
-				o->position = glm::vec3(x1 + 2, 0, 0);
-				o->rotation.y = x1 * .25f;
-				o->addComponent(new CubeComponent(1.2, 1.2, 1.2, 1, 0, 0, 1));
-				//o->addComponent(new ObjModel("models/teacup/cup.obj"));
-				o->addComponent(new SpinComponent(5.0f));
-				o->point = 90 * x1;
+	for (int x1 = 0; x1 < 4; x1 += 1)
+	{
+		GameObject* o = new GameObject();
+		o->position = glm::vec3(x1 + 2, 0, 0);
+		o->rotation.y = x1 * .25f;
+		//o->addComponent(new CubeComponent(1.2, 1.2, 1.2, 1, 0, 0, 1));
+		o->addComponent(new ObjModel("models/car/honda_jazz.obj"));
+		o->addComponent(new SpinComponent(5.0f));
+		o->point = 90 * x1;
 
-				objects.push_back(o);
-			
-			
-		}
-
+		objects.push_back(o);
 
 
+	}
 
-	
+
+
+	//model = new ObjModel("models/car/honda_jazz.obj");
+
+
+
 	glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
 		{
 			if (key == GLFW_KEY_ESCAPE)
@@ -106,8 +110,17 @@ void init()
 		});
 }
 
+GameObject* positionCircleX(GameObject* object, float degrees) {
+
+	float radian = (degrees * M_PI) / 180;
+	object->position.x = 10 * sin(radian);
+	object->position.z = 10 * cos(radian);
+
+	return object;
+}
+
 void circlePath(GameObject* object) {
-	object->point += 0.25f;
+	object->point += 0.5f;
 	if (object->point >= 360)
 	{
 		object->point = 0;
@@ -125,15 +138,34 @@ void update()
 	lastFrameTime = currentFrameTime;
 
 	for (auto& o : objects) {
+		/*for (auto& oArea : objectArea) {
+			if (o->position.x > oArea->position.y || o->position.z > oArea->position.y)
+			{
+				if (static_cast <float> (rand()) / static_cast <float> (RAND_MAX) > 0.5)
+				{
+					o->position.x += (static_cast <float> (rand()) / static_cast <float> (RAND_MAX)) / 50;
+					o->position.z += (static_cast <float> (rand()) / static_cast <float> (RAND_MAX)) / 50;
+				}
+				else {
+					o->position.x -= (static_cast <float> (rand()) / static_cast <float> (RAND_MAX)) / 50;
+					o->position.z -= (static_cast <float> (rand()) / static_cast <float> (RAND_MAX)) / 50;
+				}
+			}
+		}*/
+
 		circlePath(o);
-		
+
+
+
 		o->update(deltaTime);
 	}
 
 	for (auto& oArea : objectArea) {
 		oArea->update(deltaTime);
-	}	
-	
+	}
+
+
+
 
 }
 
@@ -149,13 +181,10 @@ void draw()
 	glm::mat4 projection = glm::perspective(glm::radians(75.0f), viewport[2] / (float)viewport[3], 0.01f, 1000.0f);
 
 	tigl::shader->setProjectionMatrix(projection);
-	tigl::shader->setViewMatrix(glm::lookAt(glm::vec3(0,10,10), glm::vec3(0,0,0), glm::vec3(0,1,0)));
+	tigl::shader->setViewMatrix(glm::lookAt(glm::vec3(0, 10, 10), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0)));
 	tigl::shader->setModelMatrix(glm::mat4(1.0f));
 
 	tigl::shader->enableColor(true);
-
-	glEnable(GL_DEPTH_TEST);
-
 	//temporary draw floor
 	tigl::begin(GL_QUADS);
 	tigl::addVertex(Vertex::PC(glm::vec3(-50, 0, -50), glm::vec4(1, 0, 0, 1)));
@@ -163,14 +192,6 @@ void draw()
 	tigl::addVertex(Vertex::PC(glm::vec3(50, 0, 50), glm::vec4(0, 0, 1, 1)));
 	tigl::addVertex(Vertex::PC(glm::vec3(50, 0, -50), glm::vec4(0, 0, 1, 1)));
 	tigl::end();
-
-	
-
-	//tigl::shader->enableTexture(true);
-
-	//model->draw();
-
-	//tigl::shader->enableTexture(false);
 
 
 

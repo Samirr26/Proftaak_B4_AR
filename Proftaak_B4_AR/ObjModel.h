@@ -2,6 +2,7 @@
 
 #include <GL/glew.h>
 #include <glm/glm.hpp>
+#include "DrawComponent.h"
 
 #include <string>
 #include <vector>
@@ -9,7 +10,7 @@
 
 class Texture;
 
-class ObjModel
+class ObjModel : public DrawComponent
 {
 private:
 	class Vertex
@@ -17,7 +18,7 @@ private:
 	public:
 		int position;
 		int normal;
-		int texcoord; 
+		int texcoord;
 	};
 
 	class Face
@@ -48,11 +49,11 @@ private:
 	std::vector<ObjGroup*> groups;
 	std::vector<MaterialInfo*> materials;
 
-	void loadMaterialFile(const std::string &fileName, const std::string &dirName);
+	void loadMaterialFile(const std::string& fileName, const std::string& dirName);
 public:
-	ObjModel(const std::string &filename);
+	ObjModel(const std::string& filename);
 	~ObjModel(void);
 
-	void draw();
+	virtual void draw() override;
 };
 
