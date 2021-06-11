@@ -195,41 +195,35 @@ void ObjModel::draw()
 	modelMatrix = glm::rotate(modelMatrix, gameObject->rotation.x, glm::vec3(1, 0, 0));
 	modelMatrix = glm::rotate(modelMatrix, gameObject->rotation.y, glm::vec3(0, 1, 0));
 	modelMatrix = glm::rotate(modelMatrix, gameObject->rotation.z, glm::vec3(0, 0, 1));
-	modelMatrix = glm::scale(modelMatrix, glm::vec3(0.01f, 0.01f, 0.01f));
+	modelMatrix = glm::scale(modelMatrix, gameObject->scale);
+
 	tigl::shader->setModelMatrix(modelMatrix);
 
 	// Loop through groups
 	for (int group = 0; group < this->groups.size(); group++)
 	{
-		
 		tigl::begin(GL_TRIANGLES);
-
+		
 		//set material texture, if available
 		//set material color, if available
 
 		// Loop through faces
 		for (auto const& face : this->groups[group]->faces)
 		{
-
+			
 			// Loop through vertices
 			for (auto const& vertice : face.vertices)
 			{
-				tigl::addVertex(tigl::Vertex::PCTN(this->vertices[vertice.position], glm::vec4(1, 0, 0, 1), this->texcoords[vertice.texcoord], this->normals[vertice.normal]));
+
+				//tigl::addVertex(tigl::Vertex::PTN(this->vertices[vertice.position], this->texcoords[vertice.texcoord], this->normals[vertice.normal]))
+				tigl::addVertex(tigl::Vertex::PT(this->vertices[vertice.position], this->texcoords[vertice.texcoord]));
+				
 			}
 		}
 		tigl::end();
 		
 	}
 
-
-
-
-	//foreach group in groups
-	//  set material texture, if available
-	//  set material color, if available
-	//  foreach face in group
-	//    foreach vertex in face
-	//      emit vertex
 }
 
 void ObjModel::loadMaterialFile(const std::string& fileName, const std::string& dirName)
@@ -276,12 +270,15 @@ void ObjModel::loadMaterialFile(const std::string& fileName, const std::string& 
 		}
 		else if (params[0] == "kd")
 		{//TODO, diffuse color
+			currentMaterial->diffuse = glm::vec3(std::stof(params[1]), std::stof(params[2]), std::stof(params[3]));
 		}
 		else if (params[0] == "ka")
 		{//TODO, ambient color
+			currentMaterial->ambient = glm::vec3(std::stof(params[1]), std::stof(params[2]), std::stof(params[3]));
 		}
 		else if (params[0] == "ks")
 		{//TODO, specular color
+			currentMaterial->specular = glm::vec3(std::stof(params[1]), std::stof(params[2]), std::stof(params[3]));
 		}
 		else if (
 			params[0] == "illum" ||

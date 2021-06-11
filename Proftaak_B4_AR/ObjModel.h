@@ -4,6 +4,7 @@
 #include <glm/glm.hpp>
 #include "DrawComponent.h"
 
+
 #include <string>
 #include <vector>
 #include <list>
@@ -32,6 +33,9 @@ private:
 		MaterialInfo();
 		std::string name;
 		Texture* texture;
+		glm::vec3 ambient;
+		glm::vec3 diffuse;
+		glm::vec3 specular;
 	};
 
 	class ObjGroup

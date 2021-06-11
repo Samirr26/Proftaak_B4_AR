@@ -81,21 +81,24 @@ void init()
 	o1->position = glm::vec3(0, 0, 0);
 	o1->addComponent(new ObjModel("models/car/honda_jazz.obj"));
 	objects.push_back(o1);*/
+	
 
 	for (int x1 = 0; x1 < 4; x1 += 1)
 	{
 		GameObject* o = new GameObject();
 		o->position = glm::vec3(x1 + 2, 0, 0);
 		o->rotation.y = x1 * .25f;
+		o->scale = glm::vec3(0.03f, 0.03f, 0.03f);
 		//o->addComponent(new CubeComponent(1.2, 1.2, 1.2, 1, 0, 0, 1));
-		o->addComponent(new ObjModel("models/car/honda_jazz.obj"));
+		o->addComponent(new ObjModel("models/cup3/cup.obj"));
 		o->addComponent(new SpinComponent(5.0f));
 		o->point = 90 * x1;
 
 		objects.push_back(o);
 
-
 	}
+
+	
 
 
 
@@ -193,8 +196,12 @@ void draw()
 	tigl::addVertex(Vertex::PC(glm::vec3(50, 0, -50), glm::vec4(0, 0, 1, 1)));
 	tigl::end();
 
+	tigl::shader->enableTexture(true);
+
 	for (auto& o : objects)
 		o->draw();
+
+	tigl::shader->enableTexture(false);
 
 
 	for (auto& oArea : objectArea)
