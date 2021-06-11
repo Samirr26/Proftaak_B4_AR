@@ -192,13 +192,18 @@ void ObjModel::draw()
 	glm::mat4 modelMatrix(1.0f);
 
 	modelMatrix = glm::translate(modelMatrix, gameObject->position);
+	modelMatrix = glm::rotate(modelMatrix, gameObject->rotation.x, glm::vec3(1, 0, 0));
+	modelMatrix = glm::rotate(modelMatrix, gameObject->rotation.y, glm::vec3(0, 1, 0));
+	modelMatrix = glm::rotate(modelMatrix, gameObject->rotation.z, glm::vec3(0, 0, 1));
 	modelMatrix = glm::scale(modelMatrix, glm::vec3(0.01f, 0.01f, 0.01f));
 	tigl::shader->setModelMatrix(modelMatrix);
 
 	// Loop through groups
 	for (int group = 0; group < this->groups.size(); group++)
 	{
+		
 		tigl::begin(GL_TRIANGLES);
+
 		//set material texture, if available
 		//set material color, if available
 
@@ -213,7 +218,9 @@ void ObjModel::draw()
 			}
 		}
 		tigl::end();
+		
 	}
+
 
 
 

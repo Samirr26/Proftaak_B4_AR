@@ -193,13 +193,14 @@ void draw()
 	tigl::addVertex(Vertex::PC(glm::vec3(50, 0, -50), glm::vec4(0, 0, 1, 1)));
 	tigl::end();
 
-
-
 	for (auto& o : objects)
 		o->draw();
 
+
 	for (auto& oArea : objectArea)
 		oArea->draw();
+
+	
 }
 
 
