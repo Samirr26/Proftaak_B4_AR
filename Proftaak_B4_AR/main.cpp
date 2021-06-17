@@ -88,38 +88,74 @@ void init()
 
 	for (int x1 = 0; x1 < 4; x1 += 1)
 	{
+		// Cup gameobjects
 		GameObject* o = new GameObject();
 		o->position = glm::vec3(x1 + 2, 0, 0);
 		o->rotation.y = x1 * .25f;
 		o->scale = glm::vec3(0.03f, 0.03f, 0.03f);
 		//o->addComponent(new CubeComponent(1.2, 1.2, 1.2, 1, 0, 0, 1));
 		o->addComponent(new ObjModel("models/cup3/cup.obj"));
-		o->addComponent(new SpinComponent(5.0f));
+		//o->addComponent(new SpinComponent(5.0f));
 		o->point = 90 * x1;
 
 		objects.push_back(o);
 
 	}
 
-	for (int x1 = 0; x1 < 4; x1 += 1)
-	{
-		GameObject* o = new GameObject();
-		o->position = glm::vec3(x1 + 2, 2, 0);
-		o->rotation.y = x1 * .25f;
-		//o->scale = glm::vec3(0.03f, 0.03f, 0.03f);
-		o->addComponent(new CubeComponent(0.3, 0.3, 0.3, 1, 1, 1, 0));
-		o->addComponent(new SpinComponent(5.0f));
-		o->point = 90 * x1;
+	//// Cube for faces
+	//for (int x1 = 0; x1 < 4; x1 += 1)
+	//{
+	//	GameObject* o = new GameObject();
+	//	o->position = glm::vec3(x1 + 2, 2.25, 0);
+	//	o->rotation.y = x1 * .25f;
+	//	//o->scale = glm::vec3(0.03f, 0.03f, 0.03f);
+	//	o->addComponent(new CubeComponent(0.32, 0.32, 0.32, 1, 1, 1, 0));
+	//	o->addComponent(new SpinComponent(5.0f));
+	//	o->point = 90 * x1;
 
-		objects.push_back(o);
+	//	objects.push_back(o);
 
-	}
+	//}
+	// Face
+	GameObject* o2 = new GameObject();
+	o2->position = glm::vec3(2, 2.25, 0);
+	//o2->rotation.y = .25f;
+	o2->rotation.x = -1.55f;
+ 	//o2->scale = glm::vec3(0.6f, 0.4f, 0.4f);
+	o2->addComponent(new CubeComponent(0.31, 0.29, 0.29, 1, 1, 1, 1));
+	//o2->addComponent(new SpinComponent(5.0f));
+	o2->point = 90;
+
+	objects.push_back(o2);
+
+	// Steve
+	GameObject* o = new GameObject();
+	o->position = glm::vec3(2, 0, 0);
+	//o->rotation.y = .25f;
+	o->scale = glm::vec3(0.3f, 0.3f, 0.3f);
+	o->addComponent(new ObjModel("models/steve/Steve.obj"));
+	//o->addComponent(new SpinComponent(5.0f));
+	o->point = 90;
+
+	objects.push_back(o);
 
 	
+
+	// Carousel
+	/*GameObject* o1 = new GameObject();
+	o1->position = glm::vec3(2, 2, 2);
+	o->rotation.y = .25f;
+	o->scale = glm::vec3(0.003f, 0.003f, 0.003f);
+	o1->addComponent(new ObjModel("models/btc/btc.obj"));
+	o->addComponent(new SpinComponent(5.0f));
+	o1->point = 90;
+
+	objects.push_back(o1);*/
+
 	
 
 	camera = new FpsCam(window);
-	texture = new Texture("Resources/test1.jpg");
+	//texture = new Texture("Resources/test1.jpg");
 
 	//model = new ObjModel("models/car/honda_jazz.obj");
 
@@ -245,8 +281,8 @@ void draw()
 	drawTerrain();
 
 
-	tigl::shader->enableTexture(true);
-	texture->bind();
+	
+	//texture->bind();
 
 	////temporary draw floor
 	//tigl::begin(GL_QUADS);
@@ -255,7 +291,9 @@ void draw()
 	//tigl::addVertex(Vertex::PC(glm::vec3(50, 0, 50), glm::vec4(0, 0, 1, 1)));
 	//tigl::addVertex(Vertex::PC(glm::vec3(50, 0, -50), glm::vec4(0, 0, 1, 1)));
 	//tigl::end();
-
+	texture = new Texture("Resources/detectedFaceWithMask.png");
+	tigl::shader->enableTexture(true);
+	texture->bind();
 	
 
 	
@@ -263,7 +301,6 @@ void draw()
 	for (auto& o : objects)
 		o->draw();
 
-	//texture->unBind();
 
 	tigl::shader->enableTexture(false);
 

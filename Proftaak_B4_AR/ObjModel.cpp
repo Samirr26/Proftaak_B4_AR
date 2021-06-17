@@ -205,7 +205,17 @@ void ObjModel::draw()
 		tigl::begin(GL_TRIANGLES);
 		
 		//set material texture, if available
+		if(this->materials[group]->texture != NULL)
+		this->materials[group]->texture->bind();
 		//set material color, if available
+		glm::vec4 color = glm::vec4(1, 1, 1, 1);
+		if (this->materials[group]->ambient.x != NULL && this->materials[group]->diffuse.x != NULL && this->materials[group]->specular.x != NULL) {
+			glm::vec3 ambient = this->materials[group]->ambient;
+			glm::vec3 diffuse = this->materials[group]->diffuse;
+			glm::vec3 specular = this->materials[group]->specular;
+			color = glm::vec4(ambient.x + diffuse.x + specular.x, ambient.y + diffuse.y + specular.y,
+				ambient.z + diffuse.z + specular.z, 1);
+		}
 
 		// Loop through faces
 		for (auto const& face : this->groups[group]->faces)
@@ -214,10 +224,22 @@ void ObjModel::draw()
 			// Loop through vertices
 			for (auto const& vertice : face.vertices)
 			{
-
-				//tigl::addVertex(tigl::Vertex::PTN(this->vertices[vertice.position], this->texcoords[vertice.texcoord], this->normals[vertice.normal]))
-				tigl::addVertex(tigl::Vertex::PTN(this->vertices[vertice.position], this->texcoords[vertice.texcoord], this->normals[vertice.normal]));
-				
+				if (this->normals.size() == 0) {
+					if (this->materials[group]->texture == NULL) {
+						tigl::addVertex(tigl::Vertex::PC(this->vertices[vertice.position], color));
+					}
+					else {
+						tigl::addVertex(tigl::Vertex::PTC(this->vertices[vertice.position], this->texcoords[vertice.texcoord], color));
+					}
+				}
+				else {
+					if (this->materials[group]->texture == NULL) {
+						tigl::addVertex(tigl::Vertex::PCN(this->vertices[vertice.position], color, this->normals[vertice.normal]));
+					}
+					else {
+						tigl::addVertex(tigl::Vertex::PCTN(this->vertices[vertice.position], color, this->texcoords[vertice.texcoord], this->normals[vertice.normal]));
+					}
+				}
 			}
 		}
 		tigl::end();
