@@ -16,6 +16,7 @@ using tigl::Vertex;
 #include <iostream>
 #include "FpsCam.h"
 #include "Texture.h"
+#include "FaceDetection.h"
 
 #define _USE_MATH_DEFINES
 
@@ -29,10 +30,16 @@ using tigl::Vertex;
 GLFWwindow* window;
 FpsCam* camera;
 Texture* texture;
+FaceDetection faceDetection(0);
 
 void init();
 void update();
 void draw();
+
+void faceDetectionTask() {
+
+	faceDetection.VideoDisplay();
+}
 
 int main(void)
 {
@@ -50,8 +57,11 @@ int main(void)
 
 	init();
 
+	std::thread faceDetectThread(faceDetectionTask);
+
 	while (!glfwWindowShouldClose(window))
 	{
+		
 		update();
 		draw();
 		glfwSwapBuffers(window);

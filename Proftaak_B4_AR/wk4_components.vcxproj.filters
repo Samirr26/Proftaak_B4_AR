@@ -44,6 +44,7 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FaceDetection.cpp" />
+    <ClCompile Include="FaceCutOut.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Component.h">
@@ -89,6 +90,7 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="FaceDetection.h" />
+    <ClInclude Include="FaceCutOut.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="components">
