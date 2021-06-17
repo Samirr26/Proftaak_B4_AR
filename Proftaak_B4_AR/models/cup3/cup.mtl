@@ -10,9 +10,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Ka tex\cup.jpg
-map_Kd tex\cup.jpg
-map_d tex\Jazz_opacity.jpg
+
 
 newmtl Steel_-_Satin
 Ns 0.000000
