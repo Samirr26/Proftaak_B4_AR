@@ -81,7 +81,7 @@ int main(void)
 
 
 std::list<GameObject*> objects;
-std::list<GameObject*> objectArea;
+std::list<GameObject*> faceObjectList;
 float counterSin = 0;
 double lastFrameTime = 0;
 bool startingPoint = true;
@@ -141,7 +141,7 @@ void init()
 	//o2->addComponent(new SpinComponent(5.0f));
 	o2->point = 90;
 
-	objects.push_back(o2);
+	faceObjectList.push_back(o2);
 
 	// Steve
 	GameObject* o = new GameObject();
@@ -183,15 +183,6 @@ void init()
 		});
 }
 
-GameObject* positionCircleX(GameObject* object, float degrees) {
-
-	float radian = (degrees * M_PI) / 180;
-	object->position.x = 10 * sin(radian);
-	object->position.z = 10 * cos(radian);
-
-	return object;
-}
-
 void circlePath(GameObject* object) {
 	object->point += 0.5f;
 	if (object->point >= 360)
@@ -213,55 +204,44 @@ void update()
 	camera->update(window);
 
 	for (auto& o : objects) {
-		/*for (auto& oArea : objectArea) {
-			if (o->position.x > oArea->position.y || o->position.z > oArea->position.y)
-			{
-				if (static_cast <float> (rand()) / static_cast <float> (RAND_MAX) > 0.5)
-				{
-					o->position.x += (static_cast <float> (rand()) / static_cast <float> (RAND_MAX)) / 50;
-					o->position.z += (static_cast <float> (rand()) / static_cast <float> (RAND_MAX)) / 50;
-				}
-				else {
-					o->position.x -= (static_cast <float> (rand()) / static_cast <float> (RAND_MAX)) / 50;
-					o->position.z -= (static_cast <float> (rand()) / static_cast <float> (RAND_MAX)) / 50;
-				}
-			}
-		}*/
-
 		circlePath(o);
-
-
-
 		o->update(deltaTime);
 	}
 
-	for (auto& oArea : objectArea) {
-		oArea->update(deltaTime);
+	for (auto& oFace : faceObjectList) {
+		circlePath(oFace);
+		oFace->update(deltaTime);
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS)
-		texture = new Texture("Resources/gras.jpg");
+		texture = new Texture("Resources/Faces/detectedFace.png");
 	if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS)
 		texture = new Texture("Resources/test.jpg");
 
 }
 
 void drawTerrain() {
+	for (auto& o : objects) {
+		texture = new Texture("Resources/gras.jpg");
+		//texture = new Texture("Resources/Faces/detectedFace.png");
+		tigl::shader->enableTexture(true);
+		texture->bind();
 
-	texture = new Texture("Resources/gras.jpg");
-	tigl::shader->enableTexture(true);
-	texture->bind();
+		//temporary draw floor
 
-	//temporary draw floor
+		tigl::begin(GL_QUADS);
+		tigl::addVertex(Vertex::PCTN(glm::vec3(-50, 0, -50), glm::vec4(1, 1, 1, 1), glm::vec2(0, 0), glm::vec3(0, 1, 0)));
+		tigl::addVertex(Vertex::PCTN(glm::vec3(-50, 0, 50), glm::vec4(1, 1, 1, 1), glm::vec2(0, 1), glm::vec3(0, 1, 0)));
+		tigl::addVertex(Vertex::PCTN(glm::vec3(50, 0, 50), glm::vec4(1, 1, 1, 1), glm::vec2(1, 1), glm::vec3(0, 1, 0)));
+		tigl::addVertex(Vertex::PCTN(glm::vec3(50, 0, -50), glm::vec4(1, 1, 1, 1), glm::vec2(1, 0), glm::vec3(0, 1, 0)));
+		tigl::end();
 
-	tigl::begin(GL_QUADS);
-	tigl::addVertex(Vertex::PCTN(glm::vec3(-50, 0, -50), glm::vec4(1, 1, 1, 1), glm::vec2(0, 0), glm::vec3(0, 1, 0)));
-	tigl::addVertex(Vertex::PCTN(glm::vec3(-50, 0, 50), glm::vec4(1, 1, 1, 1), glm::vec2(0, 1), glm::vec3(0, 1, 0)));
-	tigl::addVertex(Vertex::PCTN(glm::vec3(50, 0, 50), glm::vec4(1, 1, 1, 1), glm::vec2(1, 1), glm::vec3(0, 1, 0)));
-	tigl::addVertex(Vertex::PCTN(glm::vec3(50, 0, -50), glm::vec4(1, 1, 1, 1), glm::vec2(1, 0), glm::vec3(0, 1, 0)));
-	tigl::end();
+		tigl::shader->enableTexture(false);
+	}
 
-	tigl::shader->enableTexture(false);
+
+
+	
 }
 
 
@@ -295,7 +275,12 @@ void draw()
 
 	drawTerrain();
 
-
+	for (auto f : faceObjectList) {
+		texture = new Texture("Resources/Faces/detectedFace.png");
+		tigl::shader->enableTexture(true);
+		texture->bind();
+		tigl::shader->enableTexture(false);
+	}
 	
 	//texture->bind();
 
@@ -309,31 +294,7 @@ void draw()
 
 	std::cout << "Status: ";
 	std::cout << overwriting << std::endl;
-	//if (!overwriting) {
-	//
-	//	if (maskOn) {
-	//		try
-	//		{
-	//			texture = new Texture("Resources/Faces/detectedFaceWithMask.png");
-	//		}
-	//		catch (const std::exception&)
-	//		{
-	//			texture = new Texture("Resources/Faces/black.png");
-	//		}
-	//
-	//	}
-	//	else {
-	//		try
-	//		{
-	//			texture = new Texture("Resources/Faces/detectedFace.png");
-	//		}
-	//		catch (const std::exception&)
-	//		{
-	//			texture = new Texture("Resources/Faces/black.png");
-	//		}
-	//	}
-	//
-	//}
+	
 	tigl::shader->enableTexture(true);
 	texture->bind();
 	
@@ -347,8 +308,10 @@ void draw()
 	tigl::shader->enableTexture(false);
 
 
-	for (auto& oArea : objectArea)
-		oArea->draw();
+	for (auto& oFace : faceObjectList) {
+		oFace->draw();
+	}
+		
 
 	
 }

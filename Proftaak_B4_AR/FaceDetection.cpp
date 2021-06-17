@@ -1,6 +1,8 @@
 #include "FaceDetection.h"
 #include "FaceCutOut.h"
 #include "ThreadManagement.h"
+#include <thread>         // std::this_thread::sleep_for
+#include <chrono>         // std::chrono::seconds
 
 cv::Mat face;
 
@@ -95,10 +97,9 @@ int FaceDetection::VideoDisplay() {
                     face = faceCutOut.GrabCut(face_resized);
                     if (!face.empty())
                     {
-                        overwriting = 2;
                         imshow("segmented result", face_resized);
-                        overwriting = 1;
-                        imwrite("Resources/Faces/detectedFace.png", face_resized);
+                        //imwrite("Resources/Faces/detectedFace.png", face_resized);
+                        //std::this_thread::sleep_for(std::chrono::seconds(1));
                    
                     }
 
@@ -128,9 +129,7 @@ int FaceDetection::VideoDisplay() {
                     if (!face.empty())
                     {
                         imshow("segmented result", eye_resized);
-                        overwriting = 2;
                         imwrite("Resources/Faces/detectedFaceWithMask.png", eye_resized);
-                        overwriting = 1;
                     }
 
                 }
