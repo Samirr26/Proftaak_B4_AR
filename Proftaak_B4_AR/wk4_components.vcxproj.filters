@@ -43,6 +43,7 @@
     <ClCompile Include="FpsCam.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="FaceDetection.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Component.h">
@@ -87,6 +88,7 @@
     <ClInclude Include="FpsCam.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="FaceDetection.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="components">
