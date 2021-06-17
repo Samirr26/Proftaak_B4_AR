@@ -216,7 +216,7 @@ void ObjModel::draw()
 			{
 
 				//tigl::addVertex(tigl::Vertex::PTN(this->vertices[vertice.position], this->texcoords[vertice.texcoord], this->normals[vertice.normal]))
-				tigl::addVertex(tigl::Vertex::PT(this->vertices[vertice.position], this->texcoords[vertice.texcoord]));
+				tigl::addVertex(tigl::Vertex::PTN(this->vertices[vertice.position], this->texcoords[vertice.texcoord], this->normals[vertice.normal]));
 				
 			}
 		}

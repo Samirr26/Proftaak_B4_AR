@@ -195,6 +195,24 @@ void update()
 
 }
 
+void drawTerrain() {
+
+	texture = new Texture("Resources/gras.jpg");
+	tigl::shader->enableTexture(true);
+	texture->bind();
+
+	//temporary draw floor
+
+	tigl::begin(GL_QUADS);
+	tigl::addVertex(Vertex::PCTN(glm::vec3(-50, 0, -50), glm::vec4(1, 1, 1, 1), glm::vec2(0, 0), glm::vec3(0, 1, 0)));
+	tigl::addVertex(Vertex::PCTN(glm::vec3(-50, 0, 50), glm::vec4(1, 1, 1, 1), glm::vec2(0, 1), glm::vec3(0, 1, 0)));
+	tigl::addVertex(Vertex::PCTN(glm::vec3(50, 0, 50), glm::vec4(1, 1, 1, 1), glm::vec2(1, 1), glm::vec3(0, 1, 0)));
+	tigl::addVertex(Vertex::PCTN(glm::vec3(50, 0, -50), glm::vec4(1, 1, 1, 1), glm::vec2(1, 0), glm::vec3(0, 1, 0)));
+	tigl::end();
+
+	tigl::shader->enableTexture(false);
+}
+
 
 
 void draw()
@@ -210,18 +228,37 @@ void draw()
 	tigl::shader->setViewMatrix(camera->getMatrix());
 	tigl::shader->setModelMatrix(glm::mat4(1.0f));
 
-	tigl::shader->enableColor(true);
-	//temporary draw floor
-	tigl::begin(GL_QUADS);
-	tigl::addVertex(Vertex::PC(glm::vec3(-50, 0, -50), glm::vec4(1, 0, 0, 1)));
-	tigl::addVertex(Vertex::PC(glm::vec3(-50, 0, 50),  glm::vec4(0, 1, 0, 1)));
-	tigl::addVertex(Vertex::PC(glm::vec3(50, 0, 50), glm::vec4(0, 0, 1, 1)));
-	tigl::addVertex(Vertex::PC(glm::vec3(50, 0, -50), glm::vec4(0, 0, 1, 1)));
-	tigl::end();
+	// TODO light misschien nog verbeteren
+	// Set world lighting
+	tigl::shader->enableLighting(true);
+	tigl::shader->setLightCount(1);
+	// Set lighting properties
+	tigl::shader->setLightDirectional(0, false);
+	tigl::shader->setLightPosition(0, glm::vec3(0, 10, 0));
+	tigl::shader->setLightAmbient(0, glm::vec3(0.1f, 0.1f, 0.15f));
+	tigl::shader->setLightDiffuse(0, glm::vec3(0.8f, 0.8f, 0.8f));
+	tigl::shader->setLightSpecular(0, glm::vec3(0, 0, 0));
+	tigl::shader->setShinyness(32.0f);
 
-	texture->bind();
+	tigl::shader->enableColor(true);
+
+	drawTerrain();
+
 
 	tigl::shader->enableTexture(true);
+	texture->bind();
+
+	////temporary draw floor
+	//tigl::begin(GL_QUADS);
+	//tigl::addVertex(Vertex::PC(glm::vec3(-50, 0, -50), glm::vec4(1, 0, 0, 1)));
+	//tigl::addVertex(Vertex::PC(glm::vec3(-50, 0, 50),  glm::vec4(0, 1, 0, 1)));
+	//tigl::addVertex(Vertex::PC(glm::vec3(50, 0, 50), glm::vec4(0, 0, 1, 1)));
+	//tigl::addVertex(Vertex::PC(glm::vec3(50, 0, -50), glm::vec4(0, 0, 1, 1)));
+	//tigl::end();
+
+	
+
+	
 
 	for (auto& o : objects)
 		o->draw();
