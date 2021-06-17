@@ -1,4 +1,5 @@
 #include "CubeComponent.h"
+#include "Texture.h"
 
 CubeComponent::CubeComponent(float sizeX, float sizeY, float sizeZ, float r, float g, float b, float a)
 {
@@ -53,4 +54,5 @@ CubeComponent::~CubeComponent()
 void CubeComponent::draw()
 {
 	tigl::drawVertices(GL_QUADS, verts);
+
 }

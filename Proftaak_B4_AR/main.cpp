@@ -17,6 +17,8 @@ using tigl::Vertex;
 #include "FpsCam.h"
 #include "Texture.h"
 #include "FaceDetection.h"
+#include "ThreadManagement.h"
+
 
 #define _USE_MATH_DEFINES
 
@@ -36,13 +38,18 @@ void init();
 void update();
 void draw();
 
+
 void faceDetectionTask() {
 
 	faceDetection.VideoDisplay();
 }
 
+
 int main(void)
 {
+
+	std::thread faceDetectThread(faceDetectionTask);
+
 	if (!glfwInit())
 		throw "Could not initialize glwf";
 	window = glfwCreateWindow(1400, 800, "Hello World", NULL, NULL);
@@ -56,8 +63,6 @@ int main(void)
 	tigl::init();
 
 	init();
-
-	std::thread faceDetectThread(faceDetectionTask);
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -301,7 +306,34 @@ void draw()
 	//tigl::addVertex(Vertex::PC(glm::vec3(50, 0, 50), glm::vec4(0, 0, 1, 1)));
 	//tigl::addVertex(Vertex::PC(glm::vec3(50, 0, -50), glm::vec4(0, 0, 1, 1)));
 	//tigl::end();
-	texture = new Texture("Resources/detectedFaceWithMask.png");
+
+	std::cout << "Status: ";
+	std::cout << overwriting << std::endl;
+	//if (!overwriting) {
+	//
+	//	if (maskOn) {
+	//		try
+	//		{
+	//			texture = new Texture("Resources/Faces/detectedFaceWithMask.png");
+	//		}
+	//		catch (const std::exception&)
+	//		{
+	//			texture = new Texture("Resources/Faces/black.png");
+	//		}
+	//
+	//	}
+	//	else {
+	//		try
+	//		{
+	//			texture = new Texture("Resources/Faces/detectedFace.png");
+	//		}
+	//		catch (const std::exception&)
+	//		{
+	//			texture = new Texture("Resources/Faces/black.png");
+	//		}
+	//	}
+	//
+	//}
 	tigl::shader->enableTexture(true);
 	texture->bind();
 	

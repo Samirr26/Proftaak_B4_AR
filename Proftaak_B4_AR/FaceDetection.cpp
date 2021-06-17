@@ -1,12 +1,12 @@
 #include "FaceDetection.h"
 #include "FaceCutOut.h"
+#include "ThreadManagement.h"
 
 cv::Mat face;
 
 FaceDetection::FaceDetection(int cameraId) {
 	this->cameraId = cameraId;
 	this->face = NULL;
-    this->maskOn = false;
 }
 
 void FaceDetection::detectFace() {
@@ -95,8 +95,9 @@ int FaceDetection::VideoDisplay() {
                     face = faceCutOut.GrabCut(face_resized);
                     if (!face.empty())
                     {
-                        this->maskOn = false;
+                        overwriting = 2;
                         imshow("segmented result", face_resized);
+                        overwriting = 1;
                         imwrite("Resources/Faces/detectedFace.png", face_resized);
                    
                     }
@@ -126,9 +127,10 @@ int FaceDetection::VideoDisplay() {
                     face = faceCutOut.GrabCut(eye_resized);
                     if (!face.empty())
                     {
-                        this->maskOn = true;
                         imshow("segmented result", eye_resized);
+                        overwriting = 2;
                         imwrite("Resources/Faces/detectedFaceWithMask.png", eye_resized);
+                        overwriting = 1;
                     }
 
                 }

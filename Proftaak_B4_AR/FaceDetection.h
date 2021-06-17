@@ -12,12 +12,12 @@ using namespace cv;
 class FaceDetection
 {
 public:
+	int getOverwriting();
 	FaceDetection(int cameraId);
 	void detectFace();
 	int VideoDisplay();
 	cv::Mat getFace();
-	bool maskOn;
-
+	//static bool maskOn;
 
 private:
 	int cameraId;
