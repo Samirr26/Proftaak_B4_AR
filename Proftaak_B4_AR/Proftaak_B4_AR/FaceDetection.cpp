@@ -6,6 +6,7 @@ cv::Mat face;
 FaceDetection::FaceDetection(int cameraId) {
 	this->cameraId = cameraId;
 	this->face = NULL;
+    this->maskOn = false;
 }
 
 void FaceDetection::detectFace() {
@@ -88,7 +89,19 @@ int FaceDetection::VideoDisplay() {
                 //drawing rectagle in recognized face
                 cv::rectangle(original, faces[i].tl(), faces[i].br(), Scalar(255, 0, 255), 3);
 
-                
+                if (!face_resized.empty())
+                {
+                    //grabcut the picture
+                    face = faceCutOut.GrabCut(face_resized);
+                    if (!face.empty())
+                    {
+                        this->maskOn = false;
+                        imshow("segmented result", face_resized);
+                        imwrite("Resources/Faces/detectedFace.png", face_resized);
+                   
+                    }
+
+                }
 
             }
 
@@ -102,7 +115,7 @@ int FaceDetection::VideoDisplay() {
 
                 //resizing the cropped image 
                 cv::Mat eye_resized;
-                cv::resize(crop, eye_resized, cv::Size(64, 64), 1.0, 1.0, cv::INTER_CUBIC);
+                cv::resize(crop, eye_resized, cv::Size(256, 256), 1.0, 1.0, cv::INTER_CUBIC);
 
                 //drawing rectagle in recognized eyes
                 cv::rectangle(original, mask[i].tl(), mask[i].br(), Scalar(0, 0, 255), 3);
@@ -113,11 +126,12 @@ int FaceDetection::VideoDisplay() {
                     face = faceCutOut.GrabCut(eye_resized);
                     if (!face.empty())
                     {
-                        imshow("segmented result", face);
+                        this->maskOn = true;
+                        imshow("segmented result", eye_resized);
+                        imwrite("Resources/Faces/detectedFaceWithMask.png", eye_resized);
                     }
 
                 }
-
             }
 
             

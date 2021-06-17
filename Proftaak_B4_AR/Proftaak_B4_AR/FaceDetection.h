@@ -16,6 +16,7 @@ public:
 	void detectFace();
 	int VideoDisplay();
 	cv::Mat getFace();
+	bool maskOn;
 
 
 private:
