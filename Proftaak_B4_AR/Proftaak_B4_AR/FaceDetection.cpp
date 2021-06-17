@@ -26,20 +26,20 @@ void FaceDetection::detectFace() {
 int FaceDetection::VideoDisplay() {
     FaceCutOut faceCutOut;
     
-    std::cout << "start recognizing..." << std::endl;
-    std::string classifier = "Resources/haarcascade_frontalface_default.xml";
-    std::string classifierEyes = "Resources/haarcascade_eye.xml";
+    std::cout << "start recognizing!" << std::endl;
+    static String faceCascadePath = "Resources/haarcascade_frontalface_default.xml";
+    static String maskCascadePath = "Resources/cascade.xml";
 
     cv::CascadeClassifier face_cascade;
-    cv::CascadeClassifier eyes_cascade;
+    cv::CascadeClassifier mask_cascade;
 
-    if (!face_cascade.load(classifier)) {
-        std::cout << " Error loading file" << std::endl;
+    if (!face_cascade.load(faceCascadePath)) {
+        std::cout << " Error loading file face" << std::endl;
         return -1;
     }
 
-    if (!eyes_cascade.load(classifierEyes)) {
-        std::cout << " Error loading file" << std::endl;
+    if (!mask_cascade.load(maskCascadePath)) {
+        std::cout << " Error loading file mask" << std::endl;
         return -1;
     }
 
@@ -54,7 +54,7 @@ int FaceDetection::VideoDisplay() {
     while (true)
     {
         std::vector<cv::Rect> faces;
-        std::vector<cv::Rect> eyes;
+        std::vector<cv::Rect> mask;
         cv::Mat frame, graySacleFrame, original;
 
         cap >> original;
@@ -67,7 +67,7 @@ int FaceDetection::VideoDisplay() {
             face_cascade.detectMultiScale(graySacleFrame, faces, 1.1, 10);
 
             //detect eyes in the face
-            eyes_cascade.detectMultiScale(graySacleFrame, eyes, 1.1, 10);
+            mask_cascade.detectMultiScale(graySacleFrame, mask, 1.1, 10);
 
             int width = 0, height = 0;
             cv::Mat seg_grabcut;
@@ -88,23 +88,14 @@ int FaceDetection::VideoDisplay() {
                 //drawing rectagle in recognized face
                 cv::rectangle(original, faces[i].tl(), faces[i].br(), Scalar(255, 0, 255), 3);
 
-                if (!face_resized.empty())
-                {
-                    //grabcut the picture
-                    face = faceCutOut.GrabCut(face_resized);
-                    if (!face.empty())
-                    {
-                        imshow("segmented result", face);
-                    }
-
-                }
+                
 
             }
 
-            for (int i = 0; i < eyes.size(); i++)
+            for (int i = 0; i < mask.size(); i++)
             {
                 //region of interest
-                cv::Rect eye_i = eyes[i];
+                cv::Rect eye_i = mask[i];
 
                 //crop the roi from gray image
                 cv::Mat crop = original(eye_i);
@@ -114,7 +105,18 @@ int FaceDetection::VideoDisplay() {
                 cv::resize(crop, eye_resized, cv::Size(64, 64), 1.0, 1.0, cv::INTER_CUBIC);
 
                 //drawing rectagle in recognized eyes
-                cv::rectangle(original, eyes[i].tl(), eyes[i].br(), Scalar(0, 255, 255), 3);
+                cv::rectangle(original, mask[i].tl(), mask[i].br(), Scalar(0, 0, 255), 3);
+
+                if (!eye_resized.empty())
+                {
+                    //grabcut the picture
+                    face = faceCutOut.GrabCut(eye_resized);
+                    if (!face.empty())
+                    {
+                        imshow("segmented result", face);
+                    }
+
+                }
 
             }
 
