@@ -18,6 +18,8 @@ public:
 	int VideoDisplay();
 	cv::Mat getFace();
 	bool maskOn;
+	bool overwriting;
+	bool changeTexture;
 
 private:
 	int cameraId;

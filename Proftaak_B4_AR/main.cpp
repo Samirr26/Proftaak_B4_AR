@@ -33,6 +33,9 @@ GLFWwindow* window;
 FpsCam* camera;
 Texture* texture;
 FaceDetection faceDetection(0);
+Texture* originalTexture;
+
+float speed = 0.5f;
 
 void init();
 void update();
@@ -91,6 +94,7 @@ ObjModel* model;
 
 void init()
 {
+	originalTexture = new Texture("Resources/Faces/black.png");
 	glEnable(GL_DEPTH_TEST);
 	srand(static_cast <unsigned> (time(0)));
 
@@ -183,7 +187,7 @@ void init()
 }
 
 void circlePath(GameObject* object) {
-	object->point += 0.5f;
+	object->point += speed;
 	if (object->point >= 360)
 	{
 		object->point = 0;
@@ -212,15 +216,14 @@ void update()
 		oFace->update(deltaTime);
 	}
 
-	if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS)
-		texture = new Texture("Resources/Faces/detectedFace.png");
-	if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS)
-		texture = new Texture("Resources/test.jpg");
+
+	if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS)
+		faceDetection.changeTexture = true;
 
 }
 
 void drawTerrain() {
-	for (auto& o : objects) {
+	//for (auto& o : objects) {
 		texture = new Texture("Resources/gras.jpg");
 		//texture = new Texture("Resources/Faces/detectedFace.png");
 		tigl::shader->enableTexture(true);
@@ -236,11 +239,7 @@ void drawTerrain() {
 		tigl::end();
 
 		tigl::shader->enableTexture(false);
-	}
-
-
-
-	
+	//}
 }
 
 
@@ -274,15 +273,34 @@ void draw()
 
 	drawTerrain();
 
-	for (auto f : faceObjectList) {
-		texture = new Texture("Resources/Faces/detectedFace.png");
-		tigl::shader->enableTexture(true);
-		texture->bind();
-		tigl::shader->enableTexture(false);
-	}
+	//for (auto f : faceObjectList) {
+	//	texture = new Texture("Resources/Faces/detectedFace.png");
+	//	tigl::shader->enableTexture(true);
+	//	texture->bind();
+	//	tigl::shader->enableTexture(false);
+	//}
 	
-	if (!faceDetection.maskOn) {
-		std::cout << "mask is on " << std::endl;
+	std::cout << "Status overwriting: ";
+	std::cout << overwriting << std::endl;
+
+
+	std::cout << "Status mask on: ";
+	std::cout << maskOn << std::endl;
+
+	if (faceDetection.changeTexture) {
+		if (faceDetection.maskOn) {
+			texture = new Texture("Resources/Faces/detectedFaceWithMask.png");
+			speed = 0.5f;
+			originalTexture = texture;
+		}
+		else {
+			texture = new Texture("Resources/Faces/detectedFace.png");
+			speed = 0.0f;
+			originalTexture = texture;
+		}
+	}
+	else {
+		texture = originalTexture;
 	}
 
 	//texture->bind();
@@ -294,22 +312,16 @@ void draw()
 	//tigl::addVertex(Vertex::PC(glm::vec3(50, 0, 50), glm::vec4(0, 0, 1, 1)));
 	//tigl::addVertex(Vertex::PC(glm::vec3(50, 0, -50), glm::vec4(0, 0, 1, 1)));
 	//tigl::end();
-
-	std::cout << "Status: ";
-	std::cout << overwriting << std::endl;
 	
 	tigl::shader->enableTexture(true);
 	texture->bind();
 	
-
-	
-
-	for (auto& o : objects)
-		o->draw();
-
 	for (auto& oFace : faceObjectList) {
 		oFace->draw();
 	}
+	
+	for (auto& o : objects)
+		o->draw();
 
 	tigl::shader->enableTexture(false);
 		

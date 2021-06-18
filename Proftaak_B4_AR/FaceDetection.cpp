@@ -9,7 +9,9 @@ cv::Mat face;
 FaceDetection::FaceDetection(int cameraId) {
 	this->cameraId = cameraId;
 	this->face = NULL;
-    maskOn = true;
+    maskOn = false;
+    changeTexture = false;
+    overwriting = false;
 }
 
 void FaceDetection::detectFace() {
@@ -101,8 +103,12 @@ int FaceDetection::VideoDisplay() {
                     if (!face.empty())
                     {
                         imshow("segmented result", face_resized);
-                        //imwrite("Resources/Faces/detectedFace.png", face_resized);
-                        //std::this_thread::sleep_for(std::chrono::seconds(1));
+                        overwriting = true;
+                        changeTexture = false;
+                        imwrite("Resources/Faces/detectedFace.png", face_resized);
+                        //std::this_thread::sleep_for(std::chrono::seconds(2));
+                        maskOn = false;
+                        overwriting = false;
                    
                     }
 
@@ -132,8 +138,12 @@ int FaceDetection::VideoDisplay() {
                     if (!face.empty())
                     {
                         imshow("segmented result", eye_resized);
-                       
+                        overwriting = true;
+                        changeTexture = false;
                         imwrite("Resources/Faces/detectedFaceWithMask.png", eye_resized);
+                        //std::this_thread::sleep_for(std::chrono::seconds(2));
+                        maskOn = true;
+                        overwriting = false;
                       
                     }
 
