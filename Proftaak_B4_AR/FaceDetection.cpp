@@ -9,14 +9,17 @@ cv::Mat face;
 FaceDetection::FaceDetection(int cameraId) {
 	this->cameraId = cameraId;
 	this->face = NULL;
+    maskOn = true;
 }
 
 void FaceDetection::detectFace() {
 	std::cout << "start recognizing..." << std::endl;
 	std::string classifier = "Resources/haarcascade_frontalface_default.xml";
 
+    
 	cv::VideoCapture videoCapture(cameraId);
 	cv::Mat testImage;
+
 
 	while (true) {
 		videoCapture.read(testImage);
@@ -28,7 +31,7 @@ void FaceDetection::detectFace() {
 
 int FaceDetection::VideoDisplay() {
     FaceCutOut faceCutOut;
-    
+    maskOn = false;
     std::cout << "start recognizing!" << std::endl;
     static String faceCascadePath = "Resources/haarcascade_frontalface_default.xml";
     static String maskCascadePath = "Resources/cascade.xml";
@@ -129,7 +132,9 @@ int FaceDetection::VideoDisplay() {
                     if (!face.empty())
                     {
                         imshow("segmented result", eye_resized);
+                       
                         imwrite("Resources/Faces/detectedFaceWithMask.png", eye_resized);
+                      
                     }
 
                 }

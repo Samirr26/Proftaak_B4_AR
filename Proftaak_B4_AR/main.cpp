@@ -40,7 +40,6 @@ void draw();
 
 
 void faceDetectionTask() {
-
 	faceDetection.VideoDisplay();
 }
 
@@ -282,6 +281,10 @@ void draw()
 		tigl::shader->enableTexture(false);
 	}
 	
+	if (!faceDetection.maskOn) {
+		std::cout << "mask is on " << std::endl;
+	}
+
 	//texture->bind();
 
 	////temporary draw floor
@@ -304,13 +307,11 @@ void draw()
 	for (auto& o : objects)
 		o->draw();
 
-
-	tigl::shader->enableTexture(false);
-
-
 	for (auto& oFace : faceObjectList) {
 		oFace->draw();
 	}
+
+	tigl::shader->enableTexture(false);
 		
 
 	
