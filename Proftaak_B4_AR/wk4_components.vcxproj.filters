@@ -91,7 +91,6 @@
     </ClInclude>
     <ClInclude Include="FaceDetection.h" />
     <ClInclude Include="FaceCutOut.h" />
-    <ClInclude Include="ThreadManagement.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="components">

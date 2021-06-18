@@ -198,7 +198,6 @@
     <ClInclude Include="SpinComponent.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="Texture.h" />
-    <ClInclude Include="ThreadManagement.h" />
     <ClInclude Include="tigl.h" />
     <ClInclude Include="TimerJumper.h" />
   </ItemGroup>
