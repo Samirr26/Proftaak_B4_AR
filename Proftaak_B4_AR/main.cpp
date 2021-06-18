@@ -2,7 +2,6 @@
 #include <GLFW/glfw3.h>
 #include "tigl.h"
 #include <glm/gtc/matrix_transform.hpp>
-using tigl::Vertex;
 
 #include "GameObject.h"
 #include "PlayerComponent.h"
@@ -12,13 +11,9 @@ using tigl::Vertex;
 #include "TimerJumper.h"
 #include "EnemyComponent.h"
 #include "ObjModel.h"
-#include <time.h>
-#include <iostream>
 #include "FpsCam.h"
 #include "Texture.h"
 #include "FaceDetection.h"
-#include "ThreadManagement.h"
-
 
 #define _USE_MATH_DEFINES
 
@@ -28,6 +23,8 @@ using tigl::Vertex;
 #pragma comment(lib, "glfw3.lib")
 #pragma comment(lib, "glew32s.lib")
 #pragma comment(lib, "opengl32.lib")
+
+using tigl::Vertex;
 
 GLFWwindow* window;
 FpsCam* camera;
@@ -49,7 +46,7 @@ void faceDetectionTask() {
 
 int main(void)
 {
-
+	//Start face detection thread
 	std::thread faceDetectThread(faceDetectionTask);
 
 	if (!glfwInit())
@@ -68,7 +65,6 @@ int main(void)
 
 	while (!glfwWindowShouldClose(window))
 	{
-		
 		update();
 		draw();
 		glfwSwapBuffers(window);
@@ -77,32 +73,22 @@ int main(void)
 
 	glfwTerminate();
 
-
 	return 0;
 }
 
-
 std::list<GameObject*> objects;
 std::list<GameObject*> faceObjectList;
-float counterSin = 0;
 double lastFrameTime = 0;
-bool startingPoint = true;
-GameObject* movingObject;
 
 GameObject* player;
 ObjModel* model;
 
 void init()
 {
+	//Set standard texture
 	originalTexture = new Texture("Resources/Faces/black.png");
 	glEnable(GL_DEPTH_TEST);
 	srand(static_cast <unsigned> (time(0)));
-
-	/*GameObject* o1 = new GameObject();
-	o1->position = glm::vec3(0, 0, 0);
-	o1->addComponent(new ObjModel("models/car/honda_jazz.obj"));
-	objects.push_back(o1);*/
-	
 
 	for (int x1 = 0; x1 < 4; x1 += 1)
 	{
@@ -111,74 +97,37 @@ void init()
 		o->position = glm::vec3(x1 + 2, 0, 0);
 		o->rotation.y = x1 * .25f;
 		o->scale = glm::vec3(0.03f, 0.03f, 0.03f);
-		//o->addComponent(new CubeComponent(1.2, 1.2, 1.2, 1, 0, 0, 1));
 		o->addComponent(new ObjModel("models/cup3/cup.obj"));
-		//o->addComponent(new SpinComponent(5.0f));
+		o->addComponent(new SpinComponent(2.0f));
 		o->point = 90 * x1;
 
 		objects.push_back(o);
-
 	}
 
-	//// Cube for faces
-	//for (int x1 = 0; x1 < 4; x1 += 1)
-	//{
-	//	GameObject* o = new GameObject();
-	//	o->position = glm::vec3(x1 + 2, 2.25, 0);
-	//	o->rotation.y = x1 * .25f;
-	//	//o->scale = glm::vec3(0.03f, 0.03f, 0.03f);
-	//	o->addComponent(new CubeComponent(0.32, 0.32, 0.32, 1, 1, 1, 0));
-	//	o->addComponent(new SpinComponent(5.0f));
-	//	o->point = 90 * x1;
-
-	//	objects.push_back(o);
-
-	//}
 	// Face
 	GameObject* o2 = new GameObject();
 	o2->position = glm::vec3(2, 2.25, 0);
-	//o2->rotation.y = .25f;
 	o2->rotation.x = -1.55f;
- 	//o2->scale = glm::vec3(0.6f, 0.4f, 0.4f);
 	o2->addComponent(new CubeComponent(0.31, 0.29, 0.29, 1, 1, 1, 1));
-	//o2->addComponent(new SpinComponent(5.0f));
 	o2->point = 90;
 
 	faceObjectList.push_back(o2);
 
-	// Steve
-	GameObject* o = new GameObject();
-	o->position = glm::vec3(2, 0, 0);
-	//o->rotation.y = .25f;
-	o->scale = glm::vec3(0.3f, 0.3f, 0.3f);
-	o->addComponent(new ObjModel("models/steve/Steve.obj"));
-	//o->addComponent(new SpinComponent(5.0f));
-	o->point = 90;
+	for (int i = 0; i < 4; i++) {
+		// Steve
+		GameObject* o = new GameObject();
+		o->position = glm::vec3(2, 0, 0);
+		o->scale = glm::vec3(0.3f, 0.3f, 0.3f);
+		o->addComponent(new ObjModel("models/steve/Steve.obj"));
+		o->point = 90*i;
 
-	objects.push_back(o);
+		objects.push_back(o);
+	}
 
-	
-
-	// Carousel
-	/*GameObject* o1 = new GameObject();
-	o1->position = glm::vec3(2, 2, 2);
-	o->rotation.y = .25f;
-	o->scale = glm::vec3(0.003f, 0.003f, 0.003f);
-	o1->addComponent(new ObjModel("models/btc/btc.obj"));
-	o->addComponent(new SpinComponent(5.0f));
-	o1->point = 90;
-
-	objects.push_back(o1);*/
-
-	
-
+	// Set fps cam
 	camera = new FpsCam(window);
-	//texture = new Texture("Resources/test1.jpg");
 
-	//model = new ObjModel("models/car/honda_jazz.obj");
-
-
-
+	// Set close window key
 	glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
 		{
 			if (key == GLFW_KEY_ESCAPE)
@@ -186,6 +135,7 @@ void init()
 		});
 }
 
+// Algorithm to rotate the cups
 void circlePath(GameObject* object) {
 	object->point += speed;
 	if (object->point >= 360)
@@ -198,6 +148,7 @@ void circlePath(GameObject* object) {
 
 }
 
+// Update method
 void update()
 {
 	double currentFrameTime = glfwGetTime();
@@ -206,41 +157,43 @@ void update()
 
 	camera->update(window);
 
+	//Update all objects
 	for (auto& o : objects) {
 		circlePath(o);
 		o->update(deltaTime);
 	}
 
+	//Update face
 	for (auto& oFace : faceObjectList) {
 		circlePath(oFace);
 		oFace->update(deltaTime);
 	}
 
-
+	// Set change face key
 	if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS)
 		faceDetection.changeTexture = true;
 
 }
 
+// Draw terrain method
 void drawTerrain() {
+		// Set grass texture
 		texture = new Texture("Resources/gras.jpg");
 		tigl::shader->enableTexture(true);
 		texture->bind();
 
-		//temporary draw floor
-
+		// Temporary draw floor
 		tigl::begin(GL_QUADS);
 		tigl::addVertex(Vertex::PCTN(glm::vec3(-50, 0, -50), glm::vec4(1, 1, 1, 1), glm::vec2(0, 0), glm::vec3(0, 1, 0)));
 		tigl::addVertex(Vertex::PCTN(glm::vec3(-50, 0, 50), glm::vec4(1, 1, 1, 1), glm::vec2(0, 1), glm::vec3(0, 1, 0)));
 		tigl::addVertex(Vertex::PCTN(glm::vec3(50, 0, 50), glm::vec4(1, 1, 1, 1), glm::vec2(1, 1), glm::vec3(0, 1, 0)));
 		tigl::addVertex(Vertex::PCTN(glm::vec3(50, 0, -50), glm::vec4(1, 1, 1, 1), glm::vec2(1, 0), glm::vec3(0, 1, 0)));
 		tigl::end();
-
 		tigl::shader->enableTexture(false);
 }
 
 
-
+//Draw method
 void draw()
 {
 	glClearColor(0.3f, 0.4f, 0.6f, 1.0f);
@@ -254,7 +207,6 @@ void draw()
 	tigl::shader->setViewMatrix(camera->getMatrix());
 	tigl::shader->setModelMatrix(glm::mat4(1.0f));
 
-	// TODO light misschien nog verbeteren
 	// Set world lighting
 	tigl::shader->enableLighting(true);
 	tigl::shader->setLightCount(1);
@@ -269,14 +221,8 @@ void draw()
 	tigl::shader->enableColor(true);
 
 	drawTerrain();
-	
-	std::cout << "Status overwriting: ";
-	std::cout << overwriting << std::endl;
 
-
-	std::cout << "Status mask on: ";
-	std::cout << maskOn << std::endl;
-
+	//Check if mask is On or Off and if Enter key was pressed
 	if (faceDetection.changeTexture) {
 		if (faceDetection.maskOn) {
 			texture = new Texture("Resources/Faces/detectedFaceWithMask.png");
@@ -290,24 +236,26 @@ void draw()
 		}
 	}
 	else {
+		// If no texture was selected go back to the original texture
 		texture = originalTexture;
 	}	
+
 	tigl::shader->enableTexture(true);
 	texture->bind();
 	
+	//Draw face
 	for (auto& oFace : faceObjectList) {
 		oFace->draw();
 	}
 
+	//Change texture to cup texture
 	texture = new Texture("Resources/dblauw.jpg");
 	
+	//Draw other objects
 	for (auto& o : objects)
 		o->draw();
 
-	tigl::shader->enableTexture(false);
-		
-
-	
+	tigl::shader->enableTexture(false);	
 }
 
 

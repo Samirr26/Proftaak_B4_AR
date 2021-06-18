@@ -1,6 +1,5 @@
 #include "FaceDetection.h"
 #include "FaceCutOut.h"
-#include "ThreadManagement.h"
 #include <thread>         // std::this_thread::sleep_for
 #include <chrono>         // std::chrono::seconds
 
@@ -8,22 +7,22 @@ cv::Mat face;
 
 FaceDetection::FaceDetection(int cameraId) {
 	this->cameraId = cameraId;
-	this->face = NULL;
-    maskOn = false;
-    changeTexture = false;
-    overwriting = false;
+    this->maskOn = false;
+    this->face = NULL;
+    this->changeTexture = false;
 }
 
 int FaceDetection::VideoDisplay() {
     FaceCutOut faceCutOut;
-    maskOn = false;
-    std::cout << "start recognizing!" << std::endl;
+
+    // Load cascades
     static String faceCascadePath = "Resources/haarcascade_frontalface_default.xml";
     static String maskCascadePath = "Resources/cascade.xml";
 
     cv::CascadeClassifier face_cascade;
     cv::CascadeClassifier mask_cascade;
 
+    // Check for error with file loading
     if (!face_cascade.load(faceCascadePath)) {
         std::cout << " Error loading file face" << std::endl;
         return -1;
@@ -42,6 +41,7 @@ int FaceDetection::VideoDisplay() {
         return -1;
     }
 
+    // Start loop to check for faces and masks
     while (true)
     {
         std::vector<cv::Rect> faces;
@@ -86,12 +86,11 @@ int FaceDetection::VideoDisplay() {
                     if (!face.empty())
                     {
                         changeTexture = false;
+                        //Save picture of face
                         imwrite("Resources/Faces/detectedFace.png", face_resized);
                         maskOn = false;                   
                     }
-
                 }
-
             }
 
             for (int i = 0; i < mask.size(); i++)
@@ -116,24 +115,17 @@ int FaceDetection::VideoDisplay() {
                     if (!face.empty())
                     {                       
                         changeTexture = false;
+                        // Save picture of face with mask
                         imwrite("Resources/Faces/detectedFaceWithMask.png", eye_resized);
-                        maskOn = true;
-                      
+                        maskOn = true;                 
                     }
-
                 }
             }
 
             //display to the window
             cv::imshow("Image", original);
         }
-
-        if (cv::waitKey(30) >= 0)
-            break;
+        cv::waitKey(30);
     }
     return 0;
-}
-
-cv::Mat getFace() {
-    return face;
 }

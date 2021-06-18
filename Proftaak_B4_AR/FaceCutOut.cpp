@@ -6,7 +6,6 @@ FaceCutOut::FaceCutOut() {
     
 }
 
-
 cv::Mat FaceCutOut::GrabCut(cv::Mat image) {
     cv::Mat result, bgModel, fgModel, downsampled;
     const auto fullSize = image.size();
