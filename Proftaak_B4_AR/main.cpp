@@ -223,9 +223,7 @@ void update()
 }
 
 void drawTerrain() {
-	//for (auto& o : objects) {
 		texture = new Texture("Resources/gras.jpg");
-		//texture = new Texture("Resources/Faces/detectedFace.png");
 		tigl::shader->enableTexture(true);
 		texture->bind();
 
@@ -239,7 +237,6 @@ void drawTerrain() {
 		tigl::end();
 
 		tigl::shader->enableTexture(false);
-	//}
 }
 
 
@@ -272,13 +269,6 @@ void draw()
 	tigl::shader->enableColor(true);
 
 	drawTerrain();
-
-	//for (auto f : faceObjectList) {
-	//	texture = new Texture("Resources/Faces/detectedFace.png");
-	//	tigl::shader->enableTexture(true);
-	//	texture->bind();
-	//	tigl::shader->enableTexture(false);
-	//}
 	
 	std::cout << "Status overwriting: ";
 	std::cout << overwriting << std::endl;
@@ -301,18 +291,7 @@ void draw()
 	}
 	else {
 		texture = originalTexture;
-	}
-
-	//texture->bind();
-
-	////temporary draw floor
-	//tigl::begin(GL_QUADS);
-	//tigl::addVertex(Vertex::PC(glm::vec3(-50, 0, -50), glm::vec4(1, 0, 0, 1)));
-	//tigl::addVertex(Vertex::PC(glm::vec3(-50, 0, 50),  glm::vec4(0, 1, 0, 1)));
-	//tigl::addVertex(Vertex::PC(glm::vec3(50, 0, 50), glm::vec4(0, 0, 1, 1)));
-	//tigl::addVertex(Vertex::PC(glm::vec3(50, 0, -50), glm::vec4(0, 0, 1, 1)));
-	//tigl::end();
-	
+	}	
 	tigl::shader->enableTexture(true);
 	texture->bind();
 	

@@ -14,23 +14,6 @@ FaceDetection::FaceDetection(int cameraId) {
     overwriting = false;
 }
 
-void FaceDetection::detectFace() {
-	std::cout << "start recognizing..." << std::endl;
-	std::string classifier = "Resources/haarcascade_frontalface_default.xml";
-
-    
-	cv::VideoCapture videoCapture(cameraId);
-	cv::Mat testImage;
-
-
-	while (true) {
-		videoCapture.read(testImage);
-		cv::imshow("Image", testImage);
-		cv::waitKey(1);
-	}
-}
-
-
 int FaceDetection::VideoDisplay() {
     FaceCutOut faceCutOut;
     maskOn = false;
@@ -102,14 +85,9 @@ int FaceDetection::VideoDisplay() {
                     face = faceCutOut.GrabCut(face_resized);
                     if (!face.empty())
                     {
-                        imshow("segmented result", face_resized);
-                        overwriting = true;
                         changeTexture = false;
                         imwrite("Resources/Faces/detectedFace.png", face_resized);
-                        //std::this_thread::sleep_for(std::chrono::seconds(2));
-                        maskOn = false;
-                        overwriting = false;
-                   
+                        maskOn = false;                   
                     }
 
                 }
@@ -136,23 +114,17 @@ int FaceDetection::VideoDisplay() {
                     //grabcut the picture
                     face = faceCutOut.GrabCut(eye_resized);
                     if (!face.empty())
-                    {
-                        imshow("segmented result", eye_resized);
-                        overwriting = true;
+                    {                       
                         changeTexture = false;
                         imwrite("Resources/Faces/detectedFaceWithMask.png", eye_resized);
-                        //std::this_thread::sleep_for(std::chrono::seconds(2));
                         maskOn = true;
-                        overwriting = false;
                       
                     }
 
                 }
             }
 
-            
-
-            //display to the winodw
+            //display to the window
             cv::imshow("Image", original);
         }
 
