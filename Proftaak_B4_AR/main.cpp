@@ -319,6 +319,8 @@ void draw()
 	for (auto& oFace : faceObjectList) {
 		oFace->draw();
 	}
+
+	texture = new Texture("Resources/dblauw.jpg");
 	
 	for (auto& o : objects)
 		o->draw();
