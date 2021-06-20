@@ -29,6 +29,8 @@ using tigl::Vertex;
 GLFWwindow* window;
 FpsCam* camera;
 Texture* texture;
+Texture* grassTexture;
+Texture* cupTexture;
 FaceDetection faceDetection(0);
 Texture* originalTexture;
 
@@ -48,7 +50,6 @@ int main(void)
 {
 	//Start face detection thread
 	std::thread faceDetectThread(faceDetectionTask);
-
 	if (!glfwInit())
 		throw "Could not initialize glwf";
 	window = glfwCreateWindow(1400, 800, "Hello World", NULL, NULL);
@@ -87,6 +88,8 @@ void init()
 {
 	//Set standard texture
 	originalTexture = new Texture("Resources/Faces/black.png");
+	grassTexture = new Texture("Resources/gras.jpg");
+	cupTexture = new Texture("Resources/dblauw.jpg");
 	glEnable(GL_DEPTH_TEST);
 	srand(static_cast <unsigned> (time(0)));
 
@@ -178,9 +181,9 @@ void update()
 // Draw terrain method
 void drawTerrain() {
 		// Set grass texture
-		texture = new Texture("Resources/gras.jpg");
+		//texture = new Texture("Resources/gras.jpg");
 		tigl::shader->enableTexture(true);
-		texture->bind();
+		grassTexture->bind();
 
 		// Temporary draw floor
 		tigl::begin(GL_QUADS);
@@ -234,6 +237,7 @@ void draw()
 			speed = 0.0f;
 			originalTexture = texture;
 		}
+		faceDetection.changeTexture = false;
 	}
 	else {
 		// If no texture was selected go back to the original texture
@@ -249,7 +253,7 @@ void draw()
 	}
 
 	//Change texture to cup texture
-	texture = new Texture("Resources/dblauw.jpg");
+	cupTexture->bind();
 	
 	//Draw other objects
 	for (auto& o : objects)
